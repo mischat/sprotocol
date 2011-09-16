@@ -4,10 +4,9 @@ Instructions:
 
 Building: 
 
-javac com/garlik/sprotocol/SparqlProtocolClientExample.java 
-javac com/garlik/sprotocol/SparqlProtocolClient.java 
+and
 
 Running:
 
-java com.garlik.sprotocol.SparqlProtocolClientExample
+java -cp sprotocol.jar com.garlik.sprotocol.SparqlProtocolClientExample
 
