@@ -26,12 +26,21 @@ import com.garlik.sprotocol.SparqlProtocolClient;
 public class SparqlProtocolClientExample {
 
     public static void main(String[] args) {
-        System.out.println("Start the main function"); // Display the string.
+        if (args.length == 2) {
+            if (args[1].startsWith("http")) {
+                SparqlProtocolClient sparql = new SparqlProtocolClient();
+                String out = sparql.sparql_query_post(args[0], args[1]);
+                
+                System.err.println("This is the output '"+out+"'");
+            } else {
+                System.err.println("The sparql endpoint needs to an http one");
+            }
+        } else {
+            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
 
-        SparqlProtocolClient sparql = new SparqlProtocolClient();
-        String out = sparql.sparql_query_post("SELECT * {?S ?P ?O}", "http://mmt.me.uk/sparql");
-        
-        System.out.println("This is the output '"+out+"'");
+        }
+
+
     }
     
 }
