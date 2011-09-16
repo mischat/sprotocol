@@ -1,1 +1,13 @@
-lame
+"sprotocol" is an open-source Java SPARQL Client Library, it is released on GPLv3.
+
+Instructions: 
+
+Building: 
+
+javac com/garlik/sprotocol/SparqlProtocolClientExample.java 
+javac com/garlik/sprotocol/SparqlProtocolClient.java 
+
+Running:
+
+java com.garlik.sprotocol.SparqlProtocolClientExample
+
