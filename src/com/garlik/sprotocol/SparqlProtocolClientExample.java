@@ -29,9 +29,9 @@ public class SparqlProtocolClientExample {
         if (args.length == 2) {
             if (args[1].startsWith("http")) {
                 SparqlProtocolClient sparql = new SparqlProtocolClient();
-                String out = sparql.sparql_query_post(args[0], args[1]);
+                String out = sparql.sparqlQueryPost(args[0], args[1]);
                 
-                System.err.println("This is the output '"+out+"'");
+                System.out.println(out);
             } else {
                 System.err.println("The sparql endpoint needs to an http one");
             }
