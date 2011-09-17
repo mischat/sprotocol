@@ -70,6 +70,13 @@ public class SparqlProtocolClient {
      * Send a SPARQL Query via POST
      */
     public String sparqlQueryPost (String query, String sparqlEndpoint) {
+        return sparqlQueryPost(query, sparqlEndpoint, ACCEPT_HEADER);
+    }
+
+    /**
+     * Send a SPARQL Query via POST configurable acceptHeader
+     */
+    public String sparqlQueryPost (String query, String sparqlEndpoint, String acceptHeader) {
 
         String output = "";
         try {
@@ -83,7 +90,7 @@ public class SparqlProtocolClient {
             conn.setReadTimeout(TIMEOUT);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("User-Agent", USER_AGENT);
-            conn.setRequestProperty("Accept", ACCEPT_HEADER); 
+            conn.setRequestProperty("Accept", acceptHeader); 
 
             System.err.println("This is the query is '"+query+"' being sent to endpoint '"+sparqlEndpoint+"'");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -93,20 +100,20 @@ public class SparqlProtocolClient {
             int code = conn.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {
                 //Set default content-type to be sparql-xml
-                String contenttype = SPARQL_RESULTS_TSV_MIME;
+                String contentType = SPARQL_RESULTS_TSV_MIME;
                 for (Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
                     System.err.println(header.getKey() + "=" + header.getValue());
                     if (header.getKey() != null && header.getKey().equals("Content-Type")) {
-                        contenttype = header.getValue().get(0);
+                        contentType = header.getValue().get(0);
                     } 
                 }
 
-                boolean is_rdfie = false;
+                boolean isRDFie = false;
                 for (String mime: MIME_TYPES) {
-                    if (contenttype.equals(mime)) is_rdfie = true;
+                    if (contentType.equals(mime)) isRDFie = true;
                 }
 
-                if (is_rdfie) {
+                if (isRDFie) {
                     // Get the response
                     BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     String line;
@@ -117,7 +124,7 @@ public class SparqlProtocolClient {
                     }
                     rd.close();
                 } else {
-                    System.err.println("Mime type not an RDFie related one :"+contenttype);
+                    System.err.println("Mime type not an RDFie related one :"+contentType);
                 }
             } else {
                 System.err.println("The result of the POST was a '"+code+"' HTTP response");
