@@ -110,7 +110,7 @@ public class SparqlProtocolClient {
 
                 boolean isRDFie = false;
                 for (String mime: MIME_TYPES) {
-                    if (contentType.equals(mime)) isRDFie = true;
+                    if (contentType.startsWith(mime)) isRDFie = true;
                 }
 
                 if (isRDFie) {
