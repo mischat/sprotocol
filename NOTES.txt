@@ -1,0 +1,18 @@
+Design Specification for the API: 
+
+genericQuery(String query) should return a object of class: AnyResult. 
+
+The Class AnyResult should have the following functions: 
+
+getType() -> returns one of an Enumerated Classes
+getSelectResult() -> returns something similar to the MySql SelectResult thing
+getConstructResult() -> returns a String 
+getAskResult() -> returns a boolean
+
+And then we should have more specific functions which people can use if they feel like it : 
+
+SelectResultSet executeSelect() 
+boolean executeAsk()
+String executeConstruct()
+
+And I should move the SPARQL Endpoint to the constructor, as people are more likely to be SPARQLing a given endpoint as apposed to lots of different ones
