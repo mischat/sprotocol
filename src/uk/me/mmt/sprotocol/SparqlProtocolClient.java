@@ -37,6 +37,8 @@ import java.io.OutputStreamWriter;
 
 public class SparqlProtocolClient {
     
+	private final String sparqlEndpoint;
+	
     private static final String UTF_8 = "UTF-8";
     private static final String SPARQL_RESULTS_XML_MIME = "application/sparql-results+xml";
     private static final String SPARQL_RESULTS_JSN_MIME = "application/sparql-results+json";
@@ -62,21 +64,21 @@ public class SparqlProtocolClient {
     private static final String USER_AGENT  = "sprotocol/1.1";
     private static final String ACCEPT_HEADER = SPARQL_RESULTS_TSV_MIME+", "+SPARQL_RESULTS_XML_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
 
-    public SparqlProtocolClient() {
-        //Default Values
+    public SparqlProtocolClient(String sEp) {
+        this.sparqlEndpoint = sEp;
     }
 
     /**
      * Send a SPARQL Query via POST
      */
-    public String sparqlQueryPost (String query, String sparqlEndpoint) {
-        return sparqlQueryPost(query, sparqlEndpoint, ACCEPT_HEADER);
+    public String sparqlQueryPost (String query) {
+        return sparqlQueryPost(query, ACCEPT_HEADER);
     }
 
     /**
      * Send a SPARQL Query via POST configurable acceptHeader
      */
-    public String sparqlQueryPost (String query, String sparqlEndpoint, String acceptHeader) {
+    public String sparqlQueryPost (String query, String acceptHeader) {
 
         String output = "";
         try {
@@ -84,7 +86,7 @@ public class SparqlProtocolClient {
             String data = URLEncoder.encode("query", UTF_8) + "=" + URLEncoder.encode(query, UTF_8);
 
             // Send data
-            URL url = new URL(sparqlEndpoint);
+            URL url = new URL(this.sparqlEndpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setReadTimeout(TIMEOUT);
@@ -92,7 +94,7 @@ public class SparqlProtocolClient {
             conn.setRequestProperty("User-Agent", USER_AGENT);
             conn.setRequestProperty("Accept", acceptHeader); 
 
-            System.err.println("This is the query is '"+query+"' being sent to endpoint '"+sparqlEndpoint+"'");
+            System.err.println("This is the query is '"+query+"' being sent to endpoint '"+this.sparqlEndpoint+"'");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(data);
             wr.close();

@@ -28,8 +28,8 @@ public class SparqlProtocolClientExample {
     public static void main(String[] args) {
         if (args.length == 2) {
             if (args[1].startsWith("http")) {
-                SparqlProtocolClient sparql = new SparqlProtocolClient();
-                String out = sparql.sparqlQueryPost(args[0], args[1]);
+                SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
+                String out = sparql.sparqlQueryPost(args[0]);
                 
                 System.out.println(out);
             } else {
