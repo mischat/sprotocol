@@ -10,3 +10,10 @@ Running:
 
 java -cp sprotocol.jar uk.me.mmt.sprotocol.SparqlProtocolClientExample
 
+Maven: 
+
+If you would like to use this with Maven: 
+
+Please run the following: 
+
+mvn install:install-file -Dfile=..sprotocol.jar -DgroupId=mmt -DartifactId=sprotocol -Dversion=0.9 -Dpackaging=jar
