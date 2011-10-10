@@ -1,3 +1,6 @@
+.project
+.classpath
 .class
 dist
 sprotocol.jar
+bin

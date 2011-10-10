@@ -8,5 +8,5 @@ and
 
 Running:
 
-java -cp sprotocol.jar com.garlik.sprotocol.SparqlProtocolClientExample
+java -cp sprotocol.jar uk.me.mmt.sprotocol.SparqlProtocolClientExample
 

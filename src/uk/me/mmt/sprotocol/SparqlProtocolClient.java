@@ -15,10 +15,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /**
- * Copyright 2011 Mischa Tuffield for Garlik
+ * Copyright 2011 Mischa Tuffield
  *
  */
-package com.garlik.sprotocol;
+package uk.me.mmt.sprotocol;
 
 import java.net.URL;
 import java.net.HttpURLConnection;

@@ -1,4 +1,3 @@
-
 /*
     sprotocol - Java SPARQL Protocol Client Library
 
@@ -16,32 +15,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /**
- * Copyright 2011 Mischa Tuffield for Garlik
+ * Copyright 2011 Mischa Tuffield
  *
  */
-package com.garlik.sprotocol;
+package uk.me.mmt.sprotocol;
 
-import com.garlik.sprotocol.SparqlProtocolClient;
+import java.util.Map;
 
-public class SparqlProtocolClientExample {
+/**
+ * A simple sparql protocol client, sparql in, sparql-results out
+ */
 
-    public static void main(String[] args) {
-        if (args.length == 2) {
-            if (args[1].startsWith("http")) {
-                SparqlProtocolClient sparql = new SparqlProtocolClient();
-                String out = sparql.sparqlQueryPost(args[0], args[1]);
-                
-                System.out.println(out);
-            } else {
-                System.err.println("The sparql endpoint needs to an http one");
-            }
-        } else {
-            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
+public class SelectResult {
+	
+	private Map<String, SparqlElement> result;
 
-        }
+	public void setResult(Map<String, SparqlElement> selectResult) {
+		this.result = selectResult;
+	}
 
-
-    }
+	public Map<String, SparqlElement> getResult() {
+		return result;
+	}
     
 }
 
