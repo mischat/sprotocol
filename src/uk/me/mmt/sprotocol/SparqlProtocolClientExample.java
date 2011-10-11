@@ -35,7 +35,18 @@ public class SparqlProtocolClientExample {
                 }
                 for (SelectResult result : sparqlResults.getResults()) {
 					for (String variable : sparqlResults.getHead() ) {
-						System.err.println("This variable '"+variable+"' with this result: '"+result.getResult().get(variable).getValue()+"' was returned");
+						SparqlResource resource =  result.getResult().get(variable);
+						System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
+						if (resource instanceof Literal) {
+							Literal lit = (Literal) resource;
+							if (lit.getDatatype() != null) {
+								System.err.print(" with a datatype of "+lit.getDatatype());
+							}
+							if (lit.getLanguage() != null) {
+								System.err.print(" with a language of "+lit.getLanguage());
+							}
+						}
+						System.err.println();
 					}
 					System.err.println("---------------");
 				}

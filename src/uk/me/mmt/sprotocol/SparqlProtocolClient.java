@@ -154,7 +154,6 @@ public class SparqlProtocolClient {
 		} catch (Exception e) {
 			System.err.println("There was an error making a SPARQL query via POST: "+e.getMessage());
 		}
-		System.err.println(output);
 		return output;
 	}
 
@@ -183,6 +182,12 @@ public class SparqlProtocolClient {
 				String literal = literalEl.getTextContent();
 				Literal lit = new Literal();
 				lit.setValue(literal);
+				if (literalEl.getAttribute("datatype") != null && !literalEl.getAttribute("datatype").equals("")) {
+					lit.setDatatype(literalEl.getAttribute("datatype"));
+				}
+				if (literalEl.getAttribute("xml:lang") != null && !literalEl.getAttribute("xml:lang").equals("")) {
+					lit.setLanguage(literalEl.getAttribute("xml:lang"));
+				}
 				result.put(bindingElement.getAttribute("name"),lit);
 				sr.setResult(result);
 			}   
