@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * Copyright 2011 Mischa Tuffield
  *
@@ -25,15 +25,15 @@ package uk.me.mmt.sprotocol;
  */
 
 public class Literal extends SparqlResource {
-	
+
 	private String datatype;
 	private String language;
-	
-	//Does nothing
-    public Literal() {
 
-    }	
-	
+	//Does nothing
+	public Literal() {
+
+	}	
+
 	public String getDatatype() {
 		return datatype;
 	}
@@ -49,7 +49,7 @@ public class Literal extends SparqlResource {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-    
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

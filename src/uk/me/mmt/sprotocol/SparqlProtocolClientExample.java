@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * Copyright 2011 Mischa Tuffield
  *
@@ -24,16 +24,16 @@ import uk.me.mmt.sprotocol.SparqlProtocolClient;
 
 public class SparqlProtocolClientExample {
 
-    public static void main(String[] args) {
-        if (args.length == 2) {
-            if (args[1].startsWith("http")) {
-                SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
-                SelectResultSet sparqlResults = sparql.executeSelect( args[0] );
-                                
-                if (sparqlResults != null) {
-                	System.out.println("YAY");
-                }
-                for (SelectResult result : sparqlResults.getResults()) {
+	public static void main(String[] args) {
+		if (args.length == 2) {
+			if (args[1].startsWith("http")) {
+				SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
+				SelectResultSet sparqlResults = sparql.executeSelect( args[0] );
+
+				if (sparqlResults != null) {
+					System.out.println("YAY");
+				}
+				for (SelectResult result : sparqlResults.getResults()) {
 					for (String variable : sparqlResults.getHead() ) {
 						SparqlResource resource =  result.getResult().get(variable);
 						System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
@@ -50,19 +50,19 @@ public class SparqlProtocolClientExample {
 					}
 					System.err.println("---------------");
 				}
-                
-                System.out.println("Finished - awesome");
-            } else {
-                System.err.println("The sparql endpoint needs to an http one");
-            }
-        } else {
-            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
 
-        }
+				System.out.println("Finished - awesome");
+			} else {
+				System.err.println("The sparql endpoint needs to an http one");
+			}
+		} else {
+			System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
+
+		}
 
 
-    }
-    
+	}
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

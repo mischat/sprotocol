@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * Copyright 2011 Mischa Tuffield
  *
@@ -29,9 +29,9 @@ public abstract class SparqlResource {
 	private String value;
 
 	//Does nothing
-    public SparqlResource() {
+	public SparqlResource() {
 
-    }	
+	}	
 
 	public String getValue() {
 		return value;
@@ -40,7 +40,7 @@ public abstract class SparqlResource {
 	public void setValue(String value) {
 		this.value = value;
 	} 
-    
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

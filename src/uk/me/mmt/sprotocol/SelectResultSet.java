@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * Copyright 2011 Mischa Tuffield
  *
@@ -27,14 +27,14 @@ import java.util.List;
  */
 
 public class SelectResultSet {
-	
-	//Does nothing
-    public SelectResultSet() {
 
-    }
-	
+	//Does nothing
+	public SelectResultSet() {
+
+	}
+
 	private List<String> head;
-	
+
 	private List<SelectResult> results;
 
 	public void setResults(List<SelectResult> results) {
@@ -52,7 +52,7 @@ public class SelectResultSet {
 	public List<String> getHead() {
 		return head;
 	}
-    
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

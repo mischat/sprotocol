@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * Copyright 2011 Mischa Tuffield
  *
@@ -27,14 +27,14 @@ import java.util.Map;
  */
 
 public class SelectResult {
-	
-	private Map<String, SparqlResource> result;
-	
-	//Does nothing
-    public SelectResult() {
 
-    }
-	
+	private Map<String, SparqlResource> result;
+
+	//Does nothing
+	public SelectResult() {
+
+	}
+
 	public void setResult(Map<String, SparqlResource> selectResult) {
 		this.result = selectResult;
 	}
@@ -42,7 +42,7 @@ public class SelectResult {
 	public Map<String, SparqlResource> getResult() {
 		return result;
 	}
-    
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

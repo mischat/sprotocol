@@ -201,57 +201,56 @@ public class SparqlProtocolClient {
 				sr.setResult(result);
 			}   
 		}
-		
 		return sr;
 	}
 
-		/**
-		 * This parses a sparql-results XML into a SparqlResultSet
-		 */
-		public SelectResultSet parseSparqlResultXML(String xml) {
-			SelectResultSet resultSet = new SelectResultSet();
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setValidating(false);
-			
-			try {
-				//create document builder to parse the xml
-				DocumentBuilder db = dbf.newDocumentBuilder();
-				Document dom = db.parse(new InputSource(new StringReader(xml)));
-				//get the root element
-				Element docEle = dom.getDocumentElement();
+	/**
+	 * This parses a sparql-results XML into a SparqlResultSet
+	 */
+	public SelectResultSet parseSparqlResultXML(String xml) {
+		SelectResultSet resultSet = new SelectResultSet();
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setValidating(false);
 
-				ArrayList<String> head = new ArrayList<String>();
-				NodeList variables = docEle.getElementsByTagName("variable");
-				if (head != null && variables.getLength() > 0 ) {
-					for (int i = 0 ; i < variables.getLength();i++) {
-						//get the variable element
-						Element el = (Element) variables.item(i);
-						head.add(el.getAttribute("name"));
-					}
-				}
-				
-				ArrayList<SelectResult> results = new ArrayList<SelectResult>();
-				NodeList result = docEle.getElementsByTagName("result");
-				for (int i = 0 ; i < result.getLength();i++) {
-					//get the result element
-					Element bindingEl = (Element) result.item(i);
-					SelectResult sr = parseSparqlResult(bindingEl);
-					results.add(sr);
-				}
+		try {
+			//create document builder to parse the xml
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document dom = db.parse(new InputSource(new StringReader(xml)));
+			//get the root element
+			Element docEle = dom.getDocumentElement();
 
-				if (!(head.isEmpty() || results.isEmpty())) {
-					resultSet.setHead(head);
-					resultSet.setResults(results);
-				} else {
-					System.err.print("SPARQL Result XML seems to have returned nothing");
+			ArrayList<String> head = new ArrayList<String>();
+			NodeList variables = docEle.getElementsByTagName("variable");
+			if (head != null && variables.getLength() > 0 ) {
+				for (int i = 0 ; i < variables.getLength();i++) {
+					//get the variable element
+					Element el = (Element) variables.item(i);
+					head.add(el.getAttribute("name"));
 				}
-				
-			} catch(Exception e){
-				System.err.println("There was an error parsing the XML sparql-results document: "+e.getMessage());
 			}
 
-			return resultSet;
-		}
-	}
+			ArrayList<SelectResult> results = new ArrayList<SelectResult>();
+			NodeList result = docEle.getElementsByTagName("result");
+			for (int i = 0 ; i < result.getLength();i++) {
+				//get the result element
+				Element bindingEl = (Element) result.item(i);
+				SelectResult sr = parseSparqlResult(bindingEl);
+				results.add(sr);
+			}
 
-	/* vi:set ts=8 sts=4 sw=4 et: */
+			if (!(head.isEmpty() || results.isEmpty())) {
+				resultSet.setHead(head);
+				resultSet.setResults(results);
+			} else {
+				System.err.print("SPARQL Result XML seems to have returned nothing");
+			}
+
+		} catch(Exception e){
+			System.err.println("There was an error parsing the XML sparql-results document: "+e.getMessage());
+		}
+
+		return resultSet;
+	}
+}
+
+/* vi:set ts=8 sts=4 sw=4 et: */
