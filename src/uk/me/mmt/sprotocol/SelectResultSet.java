@@ -23,10 +23,15 @@ package uk.me.mmt.sprotocol;
 import java.util.List;
 
 /**
- * A simple sparql protocol client, sparql in, sparql-results out
+ * SparqlResultSet is meant to mimic the Sparql-Results XML format 
  */
 
 public class SelectResultSet {
+	
+	//Does nothing
+    public SelectResultSet() {
+
+    }
 	
 	private List<String> head;
 	

@@ -24,9 +24,14 @@ package uk.me.mmt.sprotocol;
  * A simple sparql protocol client, sparql in, sparql-results out
  */
 
-public abstract class SparqlElement {
-	
+public abstract class SparqlResource {
+
 	private String value;
+
+	//Does nothing
+    public SparqlResource() {
+
+    }	
 
 	public String getValue() {
 		return value;

@@ -1,4 +1,3 @@
-
 /*
     sprotocol - Java SPARQL Protocol Client Library
 
@@ -29,9 +28,19 @@ public class SparqlProtocolClientExample {
         if (args.length == 2) {
             if (args[1].startsWith("http")) {
                 SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
-                String out = sparql.sparqlQueryPost( args[0] );
+                SelectResultSet sparqlResults = sparql.executeSelect( args[0] );
+                                
+                if (sparqlResults != null) {
+                	System.out.println("YAY");
+                }
+                for (SelectResult result : sparqlResults.getResults()) {
+					for (String variable : sparqlResults.getHead() ) {
+						System.err.println("This variable '"+variable+"' with this result: '"+result.getResult().get(variable).getValue()+"' was returned");
+					}
+					System.err.println("---------------");
+				}
                 
-                System.out.println(out);
+                System.out.println("Finished - awesome");
             } else {
                 System.err.println("The sparql endpoint needs to an http one");
             }

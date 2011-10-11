@@ -24,8 +24,12 @@ package uk.me.mmt.sprotocol;
  * A simple sparql protocol client, sparql in, sparql-results out
  */
 
-public class IRI extends SparqlElement {
+public class IRI extends SparqlResource {
 	
+	//Does nothing
+    public IRI() {
+
+    }
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */
