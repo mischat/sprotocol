@@ -31,9 +31,23 @@ public class Literal extends SparqlResource {
 
 	//Does nothing
 	public Literal() {
+	}
+	
+	public Literal(String literal) {
+		value = literal;
+	}
+	
+	public Literal(String literal, String dt) {
+		value = literal;
+		datatype = dt;
+	}
 
-	}	
-
+	public Literal(String literal, String dt, String lang) {
+		value = literal;
+		datatype = dt;
+		language = lang;
+	}
+	
 	public String getDatatype() {
 		return datatype;
 	}

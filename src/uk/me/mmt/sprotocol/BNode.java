@@ -30,6 +30,10 @@ public class BNode extends SparqlResource {
 	public BNode() {
 
 	}
+	
+	public BNode(String id) {
+		value = id;
+	}
 
 }
 

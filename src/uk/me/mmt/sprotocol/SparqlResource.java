@@ -26,11 +26,10 @@ package uk.me.mmt.sprotocol;
 
 public abstract class SparqlResource {
 
-	private String value;
+	protected String value;
 
 	//Does nothing
 	public SparqlResource() {
-
 	}	
 
 	public String getValue() {
