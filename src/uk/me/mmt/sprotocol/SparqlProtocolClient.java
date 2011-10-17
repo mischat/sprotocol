@@ -47,6 +47,18 @@ import org.xml.sax.InputSource;
 
 public class SparqlProtocolClient {
 
+    /**
+     * This is the sprotocol exception, this will be thrown by the library
+     * these could be caught by whoever makes use of the library
+     */
+    public static class SprotocolException extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public SprotocolException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
     private final String sparqlEndpoint;
 
     private static final String UTF_8 = "UTF-8";
@@ -80,8 +92,9 @@ public class SparqlProtocolClient {
 
     /**
      * Send a SPARQL Select Query and get back a SelectResultSet
+     * @throws SprotocolException 
      */
-    public SelectResultSet executeSelect(String query) {
+    public SelectResultSet executeSelect(String query) throws SprotocolException {
 
         String xml = sparqlQueryRaw(query);        
         return parseSparqlResultXML(xml);
@@ -90,14 +103,14 @@ public class SparqlProtocolClient {
     /**
      * Send a SPARQL Query via POST
      */
-    public String sparqlQueryRaw (String query) {
+    public String sparqlQueryRaw (String query) throws SprotocolException {
         return sparqlQueryRawAccept(query, ACCEPT_HEADER);
     }
 
     /**
      * Send a SPARQL Query via POST configurable acceptHeader returns a String
      */
-    public String sparqlQueryRawAccept (String query, String acceptHeader) {
+    public String sparqlQueryRawAccept (String query, String acceptHeader) throws SprotocolException {
 
         String output = "";
         try {
@@ -145,14 +158,14 @@ public class SparqlProtocolClient {
                     }
                     rd.close();
                 } else {
-                    System.err.println("Mime type not an RDFie related one :"+contentType);
+                    throw new SprotocolException(String.format("Mime type returned by HTTP request: '{}' not recongised ",contentType), null);
                 }
             } else {
-                System.err.println("The result of the POST was a '"+code+"' HTTP response");
+                throw new SprotocolException(String.format("The result of the POST was a '{}' HTTP response",code), null);
             }
 
         } catch (Exception e) {
-            System.err.println("There was an error making a SPARQL query via POST: "+e.getMessage());
+            throw new SprotocolException("Error when making HTTP sparql protocol call to the SPARQL endpoint", e);
         }
         return output;
     }
@@ -207,7 +220,7 @@ public class SparqlProtocolClient {
     /**
      * This parses a sparql-results XML into a SparqlResultSet
      */
-    public SelectResultSet parseSparqlResultXML(String xml) {
+    public SelectResultSet parseSparqlResultXML(String xml) throws SprotocolException {
         SelectResultSet resultSet = new SelectResultSet();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(false);
@@ -238,14 +251,11 @@ public class SparqlProtocolClient {
                 results.add(sr);
             }
 
-            if (head.isEmpty() || results.isEmpty()) {
-                System.err.print("SPARQL Result XML seems to have returned nothing");
-            }
             resultSet.setHead(head);
             resultSet.setResults(results);
 
         } catch(Exception e){
-            System.err.println("There was an error parsing the XML sparql-results document: "+e.getMessage());
+            throw new SprotocolException("Error parsing XML return via sparql protocol", e);
         }
 
         return resultSet;

@@ -21,44 +21,47 @@
 package uk.me.mmt.sprotocol;
 
 import uk.me.mmt.sprotocol.SparqlProtocolClient;
+import uk.me.mmt.sprotocol.SparqlProtocolClient.SprotocolException;
 
 public class SparqlProtocolClientExample {
 
     public static void main(String[] args) {
-        if (args.length == 2) {
-            if (args[1].startsWith("http")) {
-                SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
-                SelectResultSet sparqlResults = sparql.executeSelect( args[0] );
+    if (args.length == 2) {
+        if (args[1].startsWith("http")) {
+        SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
+        SelectResultSet sparqlResults;
+        try {
+            sparqlResults = sparql.executeSelect( args[0] );
 
-                if (sparqlResults != null) {
-                    System.out.println("YAY");
+            for (SelectResult result : sparqlResults.getResults()) {
+            for (String variable : sparqlResults.getHead() ) {
+                SparqlResource resource =  result.getResult().get(variable);
+                System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
+                if (resource instanceof Literal) {
+                Literal lit = (Literal) resource;
+                if (lit.getDatatype() != null) {
+                    System.err.print(" with a datatype of "+lit.getDatatype());
                 }
-                for (SelectResult result : sparqlResults.getResults()) {
-                    for (String variable : sparqlResults.getHead() ) {
-                        SparqlResource resource =  result.getResult().get(variable);
-                        System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
-                        if (resource instanceof Literal) {
-                            Literal lit = (Literal) resource;
-                            if (lit.getDatatype() != null) {
-                                System.err.print(" with a datatype of "+lit.getDatatype());
-                            }
-                            if (lit.getLanguage() != null) {
-                                System.err.print(" with a language of "+lit.getLanguage());
-                            }
-                        }
-                        System.err.println();
-                    }
-                    System.err.println("---------------");
+                if (lit.getLanguage() != null) {
+                    System.err.print(" with a language of "+lit.getLanguage());
                 }
-
-                System.out.println("Finished - awesome");
-            } else {
-                System.err.println("The sparql endpoint needs to an http one");
+                }
+                System.err.println();
             }
-        } else {
-            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
+            System.err.println("---------------");
+            }
+            System.out.println("Finished - awesome");
 
+        } catch (SprotocolException e) {
+            System.err.println(String.format("SPROTOCOL threw an exception: '{}'",e.getMessage()));
         }
+
+        } else {
+        System.err.println("The sparql endpoint needs to an http one");
+        }
+    } else {
+        System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
+    }
 
     }
 
