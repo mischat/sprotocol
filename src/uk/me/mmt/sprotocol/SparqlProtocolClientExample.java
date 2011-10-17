@@ -21,7 +21,7 @@
 package uk.me.mmt.sprotocol;
 
 import uk.me.mmt.sprotocol.SparqlProtocolClient;
-import uk.me.mmt.sprotocol.SparqlProtocolClient.SprotocolException;
+import uk.me.mmt.sprotocol.SprotocolException;
 
 public class SparqlProtocolClientExample {
 

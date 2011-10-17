@@ -46,19 +46,6 @@ import org.xml.sax.InputSource;
  */
 
 public class SparqlProtocolClient {
-
-    /**
-     * This is the sprotocol exception, this will be thrown by the library
-     * these could be caught by whoever makes use of the library
-     */
-    public static class SprotocolException extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public SprotocolException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-    
     private final String sparqlEndpoint;
 
     private static final String UTF_8 = "UTF-8";
