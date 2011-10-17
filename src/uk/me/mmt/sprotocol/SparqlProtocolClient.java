@@ -126,7 +126,7 @@ public class SparqlProtocolClient {
             conn.setRequestProperty("User-Agent", USER_AGENT);
             conn.setRequestProperty("Accept", acceptHeader); 
 
-            System.err.println("This is the query is '"+query+"' being sent to endpoint '"+this.sparqlEndpoint+"'");
+            //System.err.println("This is the query is '"+query+"' being sent to endpoint '"+this.sparqlEndpoint+"'");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(data);
             wr.close();
@@ -136,7 +136,7 @@ public class SparqlProtocolClient {
                 //Set default content-type to be sparql-xml
                 String contentType = SPARQL_RESULTS_TSV_MIME;
                 for (Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
-                    System.err.println(header.getKey() + "=" + header.getValue());
+                    //System.err.println(header.getKey() + "=" + header.getValue());
                     if (header.getKey() != null && header.getKey().equals("Content-Type")) {
                         contentType = header.getValue().get(0);
                     } 
