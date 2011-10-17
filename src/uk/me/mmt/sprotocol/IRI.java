@@ -26,14 +26,13 @@ package uk.me.mmt.sprotocol;
 
 public class IRI extends SparqlResource {
 
-	//Does nothing
-	public IRI() {
-
-	}
-	
-	public IRI(String iri) {
-		value = iri;
-	}
+    //Does nothing
+    public IRI() {
+    }
+    
+    public IRI(String iri) {
+        value = iri;
+    }
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

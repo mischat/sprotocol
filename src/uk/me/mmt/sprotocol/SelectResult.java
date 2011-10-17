@@ -28,20 +28,19 @@ import java.util.Map;
 
 public class SelectResult {
 
-	private Map<String, SparqlResource> result;
+    private Map<String, SparqlResource> result;
 
-	//Does nothing
-	public SelectResult() {
+    //Does nothing
+    public SelectResult() {
+    }
 
-	}
+    public void setResult(Map<String, SparqlResource> selectResult) {
+        this.result = selectResult;
+    }
 
-	public void setResult(Map<String, SparqlResource> selectResult) {
-		this.result = selectResult;
-	}
-
-	public Map<String, SparqlResource> getResult() {
-		return result;
-	}
+    public Map<String, SparqlResource> getResult() {
+        return result;
+    }
 
 }
 

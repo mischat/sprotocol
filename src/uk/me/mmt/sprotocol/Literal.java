@@ -26,43 +26,43 @@ package uk.me.mmt.sprotocol;
 
 public class Literal extends SparqlResource {
 
-	private String datatype;
-	private String language;
+    private String datatype;
+    private String language;
 
-	//Does nothing
-	public Literal() {
-	}
-	
-	public Literal(String literal) {
-		value = literal;
-	}
-	
-	public Literal(String literal, String dt) {
-		value = literal;
-		datatype = dt;
-	}
+    //Does nothing
+    public Literal() {
+    }
+    
+    public Literal(String literal) {
+        value = literal;
+    }
+    
+    public Literal(String literal, String dt) {
+        value = literal;
+        datatype = dt;
+    }
 
-	public Literal(String literal, String dt, String lang) {
-		value = literal;
-		datatype = dt;
-		language = lang;
-	}
-	
-	public String getDatatype() {
-		return datatype;
-	}
+    public Literal(String literal, String dt, String lang) {
+        value = literal;
+        datatype = dt;
+        language = lang;
+    }
+    
+    public String getDatatype() {
+        return datatype;
+    }
 
-	public void setDatatype(String datatype) {
-		this.datatype = datatype;
-	}
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
 
-	public String getLanguage() {
-		return language;
-	}
+    public String getLanguage() {
+        return language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
 }
 

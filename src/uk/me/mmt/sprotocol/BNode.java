@@ -26,14 +26,13 @@ package uk.me.mmt.sprotocol;
 
 public class BNode extends SparqlResource {
 
-	//Does nothing
-	public BNode() {
-
-	}
-	
-	public BNode(String id) {
-		value = id;
-	}
+    //Does nothing
+    public BNode() {
+    }
+    
+    public BNode(String id) {
+        value = id;
+    }
 
 }
 

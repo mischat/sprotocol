@@ -28,30 +28,29 @@ import java.util.List;
 
 public class SelectResultSet {
 
-	//Does nothing
-	public SelectResultSet() {
+    //Does nothing
+    public SelectResultSet() {
+    }
 
-	}
+    private List<String> head;
 
-	private List<String> head;
+    private List<SelectResult> results;
 
-	private List<SelectResult> results;
+    public void setResults(List<SelectResult> results) {
+        this.results = results;
+    }
 
-	public void setResults(List<SelectResult> results) {
-		this.results = results;
-	}
+    public List<SelectResult> getResults() {
+        return results;
+    }
 
-	public List<SelectResult> getResults() {
-		return results;
-	}
+    public void setHead(List<String> head) {
+        this.head = head;
+    }
 
-	public void setHead(List<String> head) {
-		this.head = head;
-	}
-
-	public List<String> getHead() {
-		return head;
-	}
+    public List<String> getHead() {
+        return head;
+    }
 
 }
 
