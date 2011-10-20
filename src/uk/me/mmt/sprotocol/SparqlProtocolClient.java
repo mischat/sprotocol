@@ -99,7 +99,7 @@ public class SparqlProtocolClient {
      */
     public String sparqlQueryRawAccept (String query, String acceptHeader) throws SprotocolException {
 
-        String output = "";
+        StringBuilder output = new StringBuilder();
         try {
             // Construct POST data packet
             String data = URLEncoder.encode("query", UTF_8) + "=" + URLEncoder.encode(query, UTF_8);
@@ -141,7 +141,8 @@ public class SparqlProtocolClient {
 
                     while ((line = rd.readLine()) != null) {
                         // Process line...
-                        output = output+line+"\n";
+                        output.append(line);
+                        output.append("\n");
                     }
                     rd.close();
                 } else {
@@ -154,7 +155,7 @@ public class SparqlProtocolClient {
         } catch (Exception e) {
             throw new SprotocolException("Error when making HTTP sparql protocol call to the SPARQL endpoint", e);
         }
-        return output;
+        return output.toString();
     }
 
     /**
