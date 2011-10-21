@@ -69,7 +69,7 @@ public class SparqlProtocolClient {
         MIME_TYPES = Collections.unmodifiableList(m);
     };
 
-    private static final int TIMEOUT = 500;
+    private static final int TIMEOUT = 2000;
     private static final String USER_AGENT  = "sprotocol/1.1";
     private static final String ACCEPT_HEADER = SPARQL_RESULTS_TSV_MIME+", "+SPARQL_RESULTS_XML_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
 
