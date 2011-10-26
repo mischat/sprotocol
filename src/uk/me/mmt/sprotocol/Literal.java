@@ -30,11 +30,14 @@ public final class Literal extends SparqlResource {
     private String language;
 
     public Literal(String literal, String dt, String lang) {
+        if (null == literal) {
+            throw new IllegalArgumentException("The value of a Literal can not be 'null'");
+        }
         value = literal;
         datatype = dt;
         language = lang;
     }
-    
+
     public String getDatatype() {
         return datatype;
     }

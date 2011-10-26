@@ -27,6 +27,9 @@ package uk.me.mmt.sprotocol;
 public final class IRI extends SparqlResource {
     
     public IRI(String iri) {
+        if (null == iri) {
+            throw new IllegalArgumentException("The value of an IRI can not be 'null'");
+        }
         value = iri;
     }
 }
