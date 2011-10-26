@@ -28,17 +28,9 @@ public abstract class SparqlResource {
 
     protected String value;
 
-    //Does nothing
-    public SparqlResource() {
-    }    
-
     public String getValue() {
         return value;
     }
-
-    public void setValue(String value) {
-        this.value = value;
-    } 
 
 }
 

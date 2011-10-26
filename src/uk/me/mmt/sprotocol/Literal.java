@@ -24,23 +24,10 @@ package uk.me.mmt.sprotocol;
  * A simple sparql protocol client, sparql in, sparql-results out
  */
 
-public class Literal extends SparqlResource {
+public final class Literal extends SparqlResource {
 
     private String datatype;
     private String language;
-
-    //Does nothing
-    public Literal() {
-    }
-    
-    public Literal(String literal) {
-        value = literal;
-    }
-    
-    public Literal(String literal, String dt) {
-        value = literal;
-        datatype = dt;
-    }
 
     public Literal(String literal, String dt, String lang) {
         value = literal;
@@ -52,16 +39,8 @@ public class Literal extends SparqlResource {
         return datatype;
     }
 
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
-
     public String getLanguage() {
         return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
 }

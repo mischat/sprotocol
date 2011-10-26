@@ -24,11 +24,7 @@ package uk.me.mmt.sprotocol;
  * A simple sparql protocol client, sparql in, sparql-results out
  */
 
-public class IRI extends SparqlResource {
-
-    //Does nothing
-    public IRI() {
-    }
+public final class IRI extends SparqlResource {
     
     public IRI(String iri) {
         value = iri;

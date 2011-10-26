@@ -69,7 +69,7 @@ public class SparqlProtocolClient {
         MIME_TYPES = Collections.unmodifiableList(m);
     };
 
-    private static final int TIMEOUT = 2000;
+    private static final int TIMEOUT = 10000;
     private static final String USER_AGENT  = "sprotocol/1.1";
     private static final String ACCEPT_HEADER = SPARQL_RESULTS_TSV_MIME+", "+SPARQL_RESULTS_XML_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
 
@@ -172,8 +172,7 @@ public class SparqlProtocolClient {
             for (int k = 0 ; k < iriBindings.getLength();k++) {
                 Element iriEl = (Element) iriBindings.item(k);
                 String iriValue = iriEl.getTextContent();
-                IRI iri = new IRI();
-                iri.setValue(iriValue);
+                IRI iri = new IRI(iriValue);
                 result.put(bindingElement.getAttribute("name"),iri);
                 sr.setResult(result);
             }
@@ -181,13 +180,17 @@ public class SparqlProtocolClient {
             for (int k = 0 ; k < literalBindings.getLength();k++) {
                 Element literalEl = (Element) literalBindings.item(k);
                 String literal = literalEl.getTextContent();
-                Literal lit = new Literal();
-                lit.setValue(literal);
-                if (literalEl.getAttribute("datatype") != null && !literalEl.getAttribute("datatype").equals("")) {
-                    lit.setDatatype(literalEl.getAttribute("datatype"));
-                }
-                if (literalEl.getAttribute("xml:lang") != null && !literalEl.getAttribute("xml:lang").equals("")) {
-                    lit.setLanguage(literalEl.getAttribute("xml:lang"));
+
+                Literal lit;
+                if (literalEl.getAttribute("datatype") != null && !literalEl.getAttribute("datatype").equals("") 
+                        && literalEl.getAttribute("xml:lang") != null && !literalEl.getAttribute("xml:lang").equals("")) {
+                    lit = new Literal(literal,literalEl.getAttribute("datatype"),literalEl.getAttribute("xml:lang"));
+                } else if ((literalEl.getAttribute("datatype") != null && !literalEl.getAttribute("datatype").equals(""))) {
+                    lit = new Literal(literal,literalEl.getAttribute("datatype"), null);
+                } else if ((literalEl.getAttribute("xml:lang") != null && !literalEl.getAttribute("xml:lang").equals(""))) {
+                    lit = new Literal(literal,null,literalEl.getAttribute("xml:lang"));
+                } else {
+                    lit = new Literal(literal,null,null);                    
                 }
                 result.put(bindingElement.getAttribute("name"),lit);
                 sr.setResult(result);
@@ -196,8 +199,7 @@ public class SparqlProtocolClient {
             for (int k = 0 ; k < bnodeBindings.getLength();k++) {
                 Element bnodeEl = (Element) bnodeBindings.item(k);
                 String bnodeId = bnodeEl.getTextContent();
-                BNode bnode = new BNode();
-                bnode.setValue(bnodeId);
+                BNode bnode = new BNode(bnodeId);
                 result.put(bindingElement.getAttribute("name"),bnode);
                 sr.setResult(result);
             }   

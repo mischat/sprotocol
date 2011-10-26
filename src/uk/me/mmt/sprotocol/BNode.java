@@ -24,7 +24,7 @@ package uk.me.mmt.sprotocol;
  * A simple sparql protocol client, sparql in, sparql-results out
  */
 
-public class BNode extends SparqlResource {
+public final class BNode extends SparqlResource {
 
     //Does nothing
     public BNode() {
