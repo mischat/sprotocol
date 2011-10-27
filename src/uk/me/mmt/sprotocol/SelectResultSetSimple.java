@@ -20,29 +20,30 @@
  */
 package uk.me.mmt.sprotocol;
 
+import java.util.List;
+
 /**
- * Literal class, immutable with option datatype and language
+ * SparqlResultSet an immutable class implementing SelectResultSet is meant to mimic the Sparql-Results XML format 
  */
-public final class Literal extends SparqlResource {
 
-    protected String datatype;
-    protected String language;
+public final class SelectResultSetSimple implements SelectResultSet {
+    protected List<String> head;
+    protected List<SelectResult> results;
 
-    public Literal(String literal, String dt, String lang) {
-        if (null == literal) {
-            throw new IllegalArgumentException("The value of a Literal can not be 'null'");
+    public SelectResultSetSimple(List<String> head, List<SelectResult> results){
+        if (null == head || null == results) {
+            throw new IllegalArgumentException("Neither the head or the resulet of the SPARQL-RESULTS xml can be 'null'");
         }
-        value = literal;
-        datatype = dt;
-        language = lang;
+        this.head = head;
+        this.results = results;
     }
 
-    public String getDatatype() {
-        return datatype;
+    public List<SelectResult> getResults() {
+        return results;
     }
 
-    public String getLanguage() {
-        return language;
+    public List<String> getHead() {
+        return head;
     }
 
 }

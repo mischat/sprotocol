@@ -29,7 +29,7 @@ public class SparqlProtocolClientExample {
     if (args.length == 2) {
         if (args[1].startsWith("http")) {
         SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
-        SelectResultSet sparqlResults;
+        SelectResultSetSimple sparqlResults;
         try {
             sparqlResults = sparql.executeSelect( args[0] );
 

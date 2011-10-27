@@ -80,7 +80,7 @@ public class SparqlProtocolClient {
      * Send a SPARQL Select Query and get back a SelectResultSet
      * @throws SprotocolException 
      */
-    public SelectResultSet executeSelect(String query) throws SprotocolException {
+    public SelectResultSetSimple executeSelect(String query) throws SprotocolException {
 
         String xml = sparqlQueryRaw(query);        
         return parseSparqlResultXML(xml);
@@ -206,8 +206,10 @@ public class SparqlProtocolClient {
     /**
      * This parses a sparql-results XML into a SparqlResultSet
      */
-    public SelectResultSet parseSparqlResultXML(String xml) throws SprotocolException {
-        SelectResultSet resultSet = new SelectResultSet();
+    public SelectResultSetSimple parseSparqlResultXML(String xml) throws SprotocolException {
+        ArrayList<String> head = new ArrayList<String>();
+        ArrayList<SelectResult> results = new ArrayList<SelectResult>();
+        
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(false);
 
@@ -218,7 +220,6 @@ public class SparqlProtocolClient {
             //get the root element
             Element docEle = dom.getDocumentElement();
 
-            ArrayList<String> head = new ArrayList<String>();
             NodeList variables = docEle.getElementsByTagName("variable");
             if (head != null && variables.getLength() > 0 ) {
                 for (int i = 0 ; i < variables.getLength();i++) {
@@ -228,7 +229,6 @@ public class SparqlProtocolClient {
                 }
             }
 
-            ArrayList<SelectResult> results = new ArrayList<SelectResult>();
             NodeList result = docEle.getElementsByTagName("result");
             for (int i = 0 ; i < result.getLength();i++) {
                 //get the result element
@@ -237,14 +237,11 @@ public class SparqlProtocolClient {
                 results.add(sr);
             }
 
-            resultSet.setHead(head);
-            resultSet.setResults(results);
-
         } catch(Exception e){
-            throw new SprotocolException("Error parsing XML return via sparql protocol", e);
+            throw new SprotocolException("Error parsing XML returned via SPARQL Endpoint", e);
         }
 
-        return resultSet;
+        return new SelectResultSetSimple(head,results);
     }
 }
 
