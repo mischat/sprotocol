@@ -25,7 +25,7 @@ package uk.me.mmt.sprotocol;
  * This is the sprotocol exception, this will be thrown by the library
  * these could be caught by whoever makes use of the library
  */
-public class SprotocolException extends Exception {
+public class SprotocolException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public SprotocolException(String message, Throwable cause) {

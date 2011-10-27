@@ -24,11 +24,10 @@ package uk.me.mmt.sprotocol;
  * Literal class, immutable with option datatype and language
  */
 public final class Literal extends SparqlResource {
-
     protected String datatype;
     protected String language;
 
-    public Literal(String literal, String dt, String lang) {
+    protected Literal(String literal, String dt, String lang) {
         if (null == literal) {
             throw new IllegalArgumentException("The value of a Literal can not be 'null'");
         }

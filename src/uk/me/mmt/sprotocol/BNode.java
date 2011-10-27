@@ -25,7 +25,7 @@ package uk.me.mmt.sprotocol;
  */
 public final class BNode extends SparqlResource {
 
-    public BNode(String id) {
+    protected BNode(String id) {
         if (null == id) {
             throw new IllegalArgumentException("The value of an BNode can not be 'null'");
         }

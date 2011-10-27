@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
@@ -78,9 +79,11 @@ public class SparqlProtocolClient {
 
     /**
      * Send a SPARQL Select Query and get back a SelectResultSet
-     * @throws SprotocolException 
+     * 
+     * @throws SprotocolException which is a run time exception
+     * @throws IOException are also thrown 
      */
-    public SelectResultSetSimple executeSelect(String query) throws SprotocolException {
+    public SelectResultSetSimple executeSelect(String query) throws SprotocolException, IOException {
 
         String xml = sparqlQueryRaw(query);        
         return parseSparqlResultXML(xml);
@@ -88,15 +91,21 @@ public class SparqlProtocolClient {
 
     /**
      * Send a SPARQL Query via POST
+     * 
+     * @throws SprotocolException which is a run time exception
+     * @throws IOException are also thrown 
      */
-    public String sparqlQueryRaw (String query) throws SprotocolException {
+    public String sparqlQueryRaw (String query) throws SprotocolException, IOException {
         return sparqlQueryRawAccept(query, ACCEPT_HEADER);
     }
 
     /**
      * Send a SPARQL Query via POST configurable acceptHeader returns a String
+     * 
+     * @throws SprotocolException which is a run time exception
+     * @throws IOException are also thrown 
      */
-    public String sparqlQueryRawAccept (String query, String acceptHeader) throws SprotocolException {
+    public String sparqlQueryRawAccept (String query, String acceptHeader) throws SprotocolException, IOException {
 
         StringBuilder output = new StringBuilder();
         try {
@@ -148,7 +157,8 @@ public class SparqlProtocolClient {
             } else {
                 throw new SprotocolException(String.format("The result of the POST was a '{}' HTTP response",code), null);
             }
-
+        } catch (IOException e) {
+            throw new IOException("IOExcetion caught by sprotocol", e);            
         } catch (Exception e) {
             throw new SprotocolException("Error when making HTTP sparql protocol call to the SPARQL endpoint", e);
         }
@@ -157,7 +167,8 @@ public class SparqlProtocolClient {
 
     /**
      * This parses a result binding and returns one of the SPARQL Results Elements
-     * @throws SprotocolException 
+     * 
+     * @throws SprotocolException which is a run time exception
      */
     public SelectResult parseSparqlResult(Element resultEl) throws SprotocolException {
         HashMap<String,SparqlResource> result = new HashMap<String,SparqlResource>();
@@ -203,6 +214,8 @@ public class SparqlProtocolClient {
 
     /**
      * This parses a sparql-results XML into a SparqlResultSet
+     *
+     * @throws SprotocolException which is a run time exception 
      */
     public SelectResultSetSimple parseSparqlResultXML(String xml) throws SprotocolException {
         ArrayList<String> head = new ArrayList<String>();
