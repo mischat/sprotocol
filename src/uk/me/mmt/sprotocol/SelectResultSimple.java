@@ -32,7 +32,7 @@ public final class SelectResultSimple implements SelectResult {
     
     public SelectResultSimple(Map<String, SparqlResource> selectResult) {
         if (null == selectResult) {
-            throw new IllegalArgumentException("The value of an SPARQL Result can not be 'null'");
+            throw new IllegalArgumentException("The value of a 'SelectResultSimple' SPARQL Result can not be 'null'");
         }
         this.result = selectResult;
     }
