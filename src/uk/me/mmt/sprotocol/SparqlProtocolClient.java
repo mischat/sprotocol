@@ -70,7 +70,7 @@ public class SparqlProtocolClient {
 
     private static final int TIMEOUT = 10000;
     private static final String USER_AGENT  = "sprotocol/1.1";
-    private static final String ACCEPT_HEADER = SPARQL_RESULTS_TSV_MIME+", "+SPARQL_RESULTS_XML_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
+    private static final String ACCEPT_HEADER = SPARQL_RESULTS_XML_MIME+", "+SPARQL_RESULTS_TSV_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
 
     public SparqlProtocolClient(String sEp) {
         this.sparqlEndpoint = sEp;
@@ -112,7 +112,6 @@ public class SparqlProtocolClient {
             conn.setRequestProperty("User-Agent", USER_AGENT);
             conn.setRequestProperty("Accept", acceptHeader); 
 
-            //System.err.println("This is the query is '"+query+"' being sent to endpoint '"+this.sparqlEndpoint+"'");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(data);
             wr.close();
@@ -120,9 +119,8 @@ public class SparqlProtocolClient {
             int code = conn.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {
                 //Set default content-type to be sparql-xml
-                String contentType = SPARQL_RESULTS_TSV_MIME;
+                String contentType = SPARQL_RESULTS_XML_MIME;
                 for (Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
-                    //System.err.println(header.getKey() + "=" + header.getValue());
                     if (header.getKey() != null && header.getKey().equals("Content-Type")) {
                         contentType = header.getValue().get(0);
                     } 
