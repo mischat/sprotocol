@@ -42,9 +42,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * A simple sparql protocol client, sparql in, sparql-results out
+ * A simple sparql protocol client, sparql in, sparql-results out, zero dependencies
  */
-
 public class SparqlProtocolClient {
     private final String sparqlEndpoint;
 
@@ -160,9 +159,9 @@ public class SparqlProtocolClient {
 
     /**
      * This parses a result binding and returns one of the SPARQL Results Elements
+     * @throws SprotocolException 
      */
-    public SelectResult parseSparqlResult(Element resultEl) {
-        SelectResult sr = new SelectResult();
+    public SelectResult parseSparqlResult(Element resultEl) throws SprotocolException {
         HashMap<String,SparqlResource> result = new HashMap<String,SparqlResource>();
 
         NodeList bindings = resultEl.getElementsByTagName("binding");
@@ -174,7 +173,6 @@ public class SparqlProtocolClient {
                 String iriValue = iriEl.getTextContent();
                 IRI iri = new IRI(iriValue);
                 result.put(bindingElement.getAttribute("name"),iri);
-                sr.setResult(result);
             }
             NodeList literalBindings = bindingElement.getElementsByTagName("literal");
             for (int k = 0 ; k < literalBindings.getLength();k++) {
@@ -193,7 +191,6 @@ public class SparqlProtocolClient {
                     lit = new Literal(literal,null,null);                    
                 }
                 result.put(bindingElement.getAttribute("name"),lit);
-                sr.setResult(result);
             }   
             NodeList bnodeBindings = bindingElement.getElementsByTagName("bnode");
             for (int k = 0 ; k < bnodeBindings.getLength();k++) {
@@ -201,10 +198,9 @@ public class SparqlProtocolClient {
                 String bnodeId = bnodeEl.getTextContent();
                 BNode bnode = new BNode(bnodeId);
                 result.put(bindingElement.getAttribute("name"),bnode);
-                sr.setResult(result);
             }   
         }
-        return sr;
+        return new SelectResultSimple(result);
     }
 
     /**

@@ -23,11 +23,23 @@ package uk.me.mmt.sprotocol;
 import java.util.Map;
 
 /**
- * What should be an interface to immutable SPARQL Results a.k.a SelectResult
+ * A simple implementation of the SelectResult interface 
+ * This can not be null
  */
-public interface SelectResult {
+public final class SelectResultSimple implements SelectResult {
+    
+    protected Map<String, SparqlResource> result;
+    
+    public SelectResultSimple(Map<String, SparqlResource> selectResult) {
+        if (null == selectResult) {
+            throw new IllegalArgumentException("The value of an SPARQL Result can not be 'null'");
+        }
+        this.result = selectResult;
+    }
 
-    public Map<String,SparqlResource> getResult();
+    public Map<String, SparqlResource> getResult() {
+        return result;
+    }
 
 }
 

@@ -28,9 +28,6 @@ import java.util.List;
 
 public class SelectResultSet {
 
-    //Does nothing
-    public SelectResultSet() {
-    }
 
     private List<String> head;
 
