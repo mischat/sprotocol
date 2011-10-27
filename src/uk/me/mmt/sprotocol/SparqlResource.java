@@ -21,9 +21,8 @@
 package uk.me.mmt.sprotocol;
 
 /**
- * A simple sparql protocol client, sparql in, sparql-results out
+ * An immutable abstract class defining what may be contained in a SPARQL result set
  */
-
 public abstract class SparqlResource {
 
     protected String value;

@@ -21,9 +21,8 @@
 package uk.me.mmt.sprotocol;
 
 /**
- * A simple sparql protocol client, sparql in, sparql-results out
+ * An immutable IRI class - disallows null values
  */
-
 public final class IRI extends SparqlResource {
     
     public IRI(String iri) {

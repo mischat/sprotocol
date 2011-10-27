@@ -21,9 +21,8 @@
 package uk.me.mmt.sprotocol;
 
 /**
- * A simple sparql protocol client, sparql in, sparql-results out
+ * Literal class, immutable with option datatype and language
  */
-
 public final class Literal extends SparqlResource {
 
     private String datatype;

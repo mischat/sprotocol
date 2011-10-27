@@ -21,9 +21,8 @@
 package uk.me.mmt.sprotocol;
 
 /**
- * A simple sparql protocol client, sparql in, sparql-results out
+ * An immutable BNode class disallows null values
  */
-
 public final class BNode extends SparqlResource {
 
     public BNode(String id) {
