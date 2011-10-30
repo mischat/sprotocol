@@ -25,12 +25,11 @@ import java.util.List;
 /**
  * SparqlResultSet an immutable class implementing SelectResultSet is meant to mimic the Sparql-Results XML format 
  */
-
 public final class SelectResultSetSimple implements SelectResultSet {
     protected List<String> head;
     protected List<SelectResult> results;
 
-    public SelectResultSetSimple(List<String> head, List<SelectResult> results){
+    protected SelectResultSetSimple(List<String> head, List<SelectResult> results){
         if (null == head || null == results) {
             throw new IllegalArgumentException("Neither the head or the resulet of the SPARQL-RESULTS xml can be 'null'");
         }

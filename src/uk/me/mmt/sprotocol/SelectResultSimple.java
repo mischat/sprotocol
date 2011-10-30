@@ -30,7 +30,7 @@ public final class SelectResultSimple implements SelectResult {
     
     protected Map<String, SparqlResource> result;
     
-    public SelectResultSimple(Map<String, SparqlResource> selectResult) {
+    protected SelectResultSimple(Map<String, SparqlResource> selectResult) {
         if (null == selectResult) {
             throw new IllegalArgumentException("The value of a 'SelectResultSimple' SPARQL Result can not be 'null'");
         }
