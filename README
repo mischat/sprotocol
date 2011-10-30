@@ -2,18 +2,18 @@
 
 Instructions: 
 
+sprotocol is a stand along Java SPARQL client library. If you would like to use sprotocol in your application please build the sprotocol JAR file, and place it in your classpath. 
+
 Building: 
 
-and
+ant
 
-Running:
+Running/Adding to classpath: 
 
 java -cp sprotocol.jar uk.me.mmt.sprotocol.SparqlProtocolClientExample
 
 Maven: 
 
-If you would like to use this with Maven: 
-
-Please run the following: 
+The following command will step you a local maven repository for sprocol: 
 
 mvn install:install-file -Dfile=..sprotocol.jar -DgroupId=mmt -DartifactId=sprotocol -Dversion=0.9 -Dpackaging=jar
