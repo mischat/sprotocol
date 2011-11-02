@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-*/
+ */
 /**
  * Copyright 2011 Mischa Tuffield
  *
@@ -55,21 +55,34 @@ public class SparqlProtocolClient {
     private static final String SPARQL_RESULTS_CSV_MIME = "text/csv";
     private static final String RDF_XML_MIME = "application/rdf+xml";
     private static final String RDF_TTL_MIME = "text/turtle";
+    private static final String RDF_NT_MIME = "text/plain";
 
-    //Known RDF mime-types
-    public final static List<String> MIME_TYPES;
+
+    //Known SPARQL-result mime-types
+    private final static List<String> SPARQL_MIME_TYPES;
     static {
-        final ArrayList<String> m = new ArrayList<String>();
-        m.add(SPARQL_RESULTS_XML_MIME);
-        m.add(SPARQL_RESULTS_JSN_MIME);
-        m.add(SPARQL_RESULTS_TSV_MIME);
-        m.add(SPARQL_RESULTS_CSV_MIME);
-        m.add(RDF_XML_MIME);
-        m.add(RDF_TTL_MIME);
-        MIME_TYPES = Collections.unmodifiableList(m);
+        final ArrayList<String> s = new ArrayList<String>();
+        s.add(SPARQL_RESULTS_XML_MIME);
+        s.add(SPARQL_RESULTS_JSN_MIME);
+        s.add(SPARQL_RESULTS_TSV_MIME);
+        s.add(SPARQL_RESULTS_CSV_MIME);
+        s.add(RDF_XML_MIME);
+        s.add(RDF_TTL_MIME);
+        s.add(RDF_NT_MIME);
+        SPARQL_MIME_TYPES = Collections.unmodifiableList(s);
     };
 
-    private static final int TIMEOUT = 10000;
+    //Known RDF mime-types
+    private final static List<String> RDF_MIME_TYPES; 
+    static {
+        final ArrayList<String> r = new ArrayList<String>();
+        r.add(RDF_XML_MIME);
+        r.add(RDF_TTL_MIME);
+        r.add(RDF_NT_MIME);
+        RDF_MIME_TYPES = Collections.unmodifiableList(r);
+    }
+
+    private static final int TIMEOUT = 200;
     private static final String USER_AGENT  = "sprotocol/1.1";
     private static final String ACCEPT_HEADER = SPARQL_RESULTS_XML_MIME+", "+SPARQL_RESULTS_TSV_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
 
@@ -78,15 +91,115 @@ public class SparqlProtocolClient {
     }
 
     /**
-     * Send a SPARQL Select Query and get back a SelectResultSet
-     * 
-     * @throws SprotocolException which is a run time exception
-     * @throws IOException are also thrown 
+     * This function will check the mime type of a SPARQL HTTP request to check 
+     * where a SPARQL-RESULT or a new RDF graph has been returned
+     * @throws IOException 
+     * @throws SprotocolException 
      */
-    public SelectResultSetSimple executeSelect(String query) throws SprotocolException, IOException {
+    public AnyResult genericQuery(String query) throws SprotocolException, IOException {
+        
+        Pair<String,String> xmlContentType = sparqlQueryAccept(query, ACCEPT_HEADER);    
+        
+        boolean isRDF = false;
+        for (String rdfMime : RDF_MIME_TYPES) {
+            if (xmlContentType.getSecond().startsWith(rdfMime)) {
+                isRDF = true;
+                break;
+            }
+        }
 
-        String xml = sparqlQueryRaw(query);        
+        if (isRDF) {
+            return new AnyResult(xmlContentType.getFirst());
+        } else if (SPARQL_RESULTS_XML_MIME.equals(xmlContentType.getSecond())) {
+            Pair<Boolean,Boolean> askResponse = processAskResponse(xmlContentType.getFirst());
+            if (askResponse.getFirst().booleanValue()) {
+                return new AnyResult(askResponse.getSecond().booleanValue());
+            } else {
+                return new AnyResult(parseSparqlResultXML(xmlContentType.getFirst()));
+            }
+        } else {
+            throw new SprotocolException("genericQuery couldn't guess the type of result returned"+xmlContentType.getSecond(), null);
+        }
+    }
+
+    /**
+     * Send a SPARQL SELECT Query and get back a SelectResultSet
+     * 
+     * @param query SPARQL SELECT
+     * @return A SelectResultSet with the results of the SELECT Query (mimics SPARQL-RESULTS format)
+     * @throws SprotocolException which is a run time exception
+     * @throws IOException are also thrown when parsing the XML
+     */
+    public SelectResultSet executeSelect(String query) throws SprotocolException, IOException {
+        String xml = executeSparqlRaw(query);        
         return parseSparqlResultXML(xml);
+    }
+
+    /**
+     * Send a SPARQL ASK Query and get back a boolean
+     * 
+     * @param query SPARQL ASK
+     * @return boolean 
+     * @throws SprotocolException which is a run time exception
+     * @throws IOException are also thrown when parsing the XML
+     */
+    public boolean executeAsk(String query) throws SprotocolException, IOException {
+        String xml = executeSparqlRaw(query); 
+        Pair<Boolean,Boolean> ask = processAskResponse(xml);
+        if (ask.getFirst().booleanValue() == false) {
+            throw new SprotocolException("Query not of type SPARQL ASK",null);  
+        }
+        return ask.getSecond().booleanValue();
+    }
+
+    /**
+     * Send a SPARQL CONSTRUCT and get back a String
+     * 
+     * @param query a construct query
+     * @return and RDF fragment as a plain old string
+     * @throws SprotocolException
+     * @throws IOException
+     */
+    public String executeConstruct(String query) throws SprotocolException, IOException {
+        return executeSparqlRaw(query);
+    }
+
+    /**
+     * Send a SPARQL CONSTRUCT and get back a String
+     * 
+     * @param query a construct query
+     * @param accept MIME-TYPE, i.e. RDF or Turtle, or ...
+     * @return and RDF fragment as a plain old string
+     * @throws SprotocolException
+     * @throws IOException
+     */
+    public String executeConstruct(String query, String accept) throws SprotocolException, IOException {
+        return executeSparqlRawAccept(query, accept);
+    }
+
+
+    /**
+     * Send a SPARQL DESCRIBE and get back a String
+     * 
+     * @param query a construct query
+     * @return and RDF fragment as a plain old string
+     * @throws SprotocolException
+     * @throws IOException
+     */
+    public String executeDescribe(String query) throws SprotocolException, IOException {
+        return executeSparqlRaw(query);
+    }
+
+    /**
+     * Send a SPARQL DESCRIBE and get back a String
+     * 
+     * @param query a construct query
+     * @return and RDF fragment as a plain old string
+     * @throws SprotocolException
+     * @throws IOException
+     */
+    public String executeDescribe(String query, String accept) throws SprotocolException, IOException {
+        return executeSparqlRawAccept(query, accept);
     }
 
     /**
@@ -95,8 +208,8 @@ public class SparqlProtocolClient {
      * @throws SprotocolException which is a run time exception
      * @throws IOException are also thrown 
      */
-    public String sparqlQueryRaw (String query) throws SprotocolException, IOException {
-        return sparqlQueryRawAccept(query, ACCEPT_HEADER);
+    public String executeSparqlRaw(String query) throws SprotocolException, IOException {
+        return executeSparqlRawAccept(query, ACCEPT_HEADER);
     }
 
     /**
@@ -105,9 +218,22 @@ public class SparqlProtocolClient {
      * @throws SprotocolException which is a run time exception
      * @throws IOException are also thrown 
      */
-    public String sparqlQueryRawAccept (String query, String acceptHeader) throws SprotocolException, IOException {
+    public String executeSparqlRawAccept(String query, String acceptHeader) throws SprotocolException, IOException {
+        return sparqlQueryAccept(query, acceptHeader).getFirst();
+    }
+
+    /**
+     * Send a SPARQL Query via POST configurable acceptHeader returns a String
+     * @returns Pair<String,String> String of the Result returned and the contentType of the string returned
+     * @throws SprotocolException which is a run time exception
+     * @throws IOException are also thrown 
+     * 
+     */
+    private Pair<String,String> sparqlQueryAccept(final String query, final String acceptHeader) throws SprotocolException, IOException {     
 
         StringBuilder output = new StringBuilder();
+        String contentType = SPARQL_RESULTS_XML_MIME;
+
         try {
             // Construct POST data packet
             String data = URLEncoder.encode("query", UTF_8) + "=" + URLEncoder.encode(query, UTF_8);
@@ -127,8 +253,10 @@ public class SparqlProtocolClient {
 
             int code = conn.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {
-                //Set default content-type to be sparql-xml
-                String contentType = SPARQL_RESULTS_XML_MIME;
+                /* Set default content-type to be sparql-xml
+                 * Assume this to be the case
+                 */
+
                 for (Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
                     if (header.getKey() != null && header.getKey().equals("Content-Type")) {
                         contentType = header.getValue().get(0);
@@ -136,7 +264,8 @@ public class SparqlProtocolClient {
                 }
 
                 boolean isRDFie = false;
-                for (String mime: MIME_TYPES) {
+                //Here i should be using "guessSparqlQueryType"
+                for (String mime: SPARQL_MIME_TYPES) {
                     if (contentType.startsWith(mime)) isRDFie = true;
                 }
 
@@ -158,11 +287,12 @@ public class SparqlProtocolClient {
                 throw new SprotocolException(String.format("The result of the POST was a '{}' HTTP response",code), null);
             }
         } catch (IOException e) {
-            throw new IOException("IOExcetion caught by sprotocol", e);            
+            throw new IOException("IOException caught by sprotocol", e);            
         } catch (Exception e) {
             throw new SprotocolException("Error when making HTTP sparql protocol call to the SPARQL endpoint", e);
         }
-        return output.toString();
+
+        return new Pair<String,String>(output.toString(),contentType);
     }
 
     /**
@@ -170,7 +300,7 @@ public class SparqlProtocolClient {
      * 
      * @throws SprotocolException which is a run time exception
      */
-    public SelectResult parseSparqlResult(Element resultEl) throws SprotocolException {
+    private SelectResult parseSparqlResult(Element resultEl) throws SprotocolException {
         HashMap<String,SparqlResource> result = new HashMap<String,SparqlResource>();
 
         NodeList bindings = resultEl.getElementsByTagName("binding");
@@ -217,10 +347,10 @@ public class SparqlProtocolClient {
      *
      * @throws SprotocolException which is a run time exception 
      */
-    public SelectResultSetSimple parseSparqlResultXML(String xml) throws SprotocolException {
+    private SelectResultSet parseSparqlResultXML(String xml) throws SprotocolException, IOException {
         ArrayList<String> head = new ArrayList<String>();
         ArrayList<SelectResult> results = new ArrayList<SelectResult>();
-        
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(false);
 
@@ -232,7 +362,7 @@ public class SparqlProtocolClient {
             Element docEle = dom.getDocumentElement();
 
             NodeList variables = docEle.getElementsByTagName("variable");
-            if (head != null && variables.getLength() > 0 ) {
+            if (variables.getLength() > 0 ) {
                 for (int i = 0 ; i < variables.getLength();i++) {
                     //get the variable element
                     Element el = (Element) variables.item(i);
@@ -247,13 +377,50 @@ public class SparqlProtocolClient {
                 SelectResult sr = parseSparqlResult(bindingEl);
                 results.add(sr);
             }
-
+        } catch (IOException e) {
+            throw new IOException("IOException caught by sprotocol", e);     
         } catch(Exception e){
             throw new SprotocolException("Error parsing XML returned via SPARQL Endpoint", e);
         }
 
         return new SelectResultSetSimple(head,results);
     }
+
+    /**
+     * @param A String representation of DOM
+     * @return Pair<Boolean,Boolean> the first boolean is a check for whether the query was an ask query
+     * the second boolean is the return value of
+     * @throws IOException
+     * @throws SprotocolException
+     */
+    private Pair<Boolean,Boolean> processAskResponse(String xml) throws IOException, SprotocolException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setValidating(false);
+
+        try {
+            //create document builder to parse the xml
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document dom = db.parse(new InputSource(new StringReader(xml)));
+            //get the root element
+            Element docEle = dom.getDocumentElement();
+
+            NodeList bool = docEle.getElementsByTagName("boolean");
+            if (bool.getLength() == 1 ) {
+                String b = bool.item(0).getTextContent();
+                if (b.equals("true")) {
+                    return new Pair<Boolean,Boolean>(true,true);
+                }
+                return new Pair<Boolean,Boolean>(true,false);
+            }
+        } catch (IOException e) {
+            throw new IOException("Error parsing XML returned via SPARQL Endpoint", e);
+        } catch(Exception e){
+            throw new SprotocolException("Error parsing XML returned via SPARQL Endpoint", e);
+        }
+
+        return new Pair<Boolean,Boolean>(false,false);
+    }
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

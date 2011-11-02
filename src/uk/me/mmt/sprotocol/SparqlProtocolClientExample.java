@@ -29,40 +29,49 @@ public class SparqlProtocolClientExample {
 
     public static void main(String[] args) {
         if (args.length == 2) {
-            if (args[1].startsWith("http")) {
-                SparqlProtocolClient sparql = new SparqlProtocolClient( args[1] );
-                SelectResultSetSimple sparqlResults;
-                try {
-                    sparqlResults = sparql.executeSelect( args[0] );
+            if (args[0].startsWith("http")) {
+                SparqlProtocolClient sparql = new SparqlProtocolClient( args[0] );
 
-                    for (SelectResult result : sparqlResults.getResults()) {
-                        for (String variable : sparqlResults.getHead() ) {
-                            SparqlResource resource =  result.getResult().get(variable);
-                            System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
-                            if (resource instanceof Literal) {
-                                Literal lit = (Literal) resource;
-                                if (lit.getDatatype() != null) {
-                                    System.err.print(" with a datatype of "+lit.getDatatype());
+                try {
+                    AnyResult sparqlResult = sparql.genericQuery( args[1] );
+
+                    ResultType sparqlResultType = sparqlResult.getResultType();
+                    if (ResultType.BOOLEAN == sparqlResultType) {
+                        System.err.println("ASK result sent the answer to the ASK is: '"+sparqlResult.getBooleanResult()+"'");
+                    } else if (ResultType.RDF == sparqlResultType) {
+                        System.err.println("RDF returned by the SPARQL query");
+                        System.err.println(sparqlResult.getRdfResult());
+                    } else if (ResultType.SPARQLRESULTS == sparqlResultType) {
+                        SelectResultSet sparqlResults = sparqlResult.getSparqlResult();
+                        for (SelectResult result : sparqlResults.getResults()) {
+                            for (String variable : sparqlResults.getHead() ) {
+                                SparqlResource resource =  result.getResult().get(variable);
+                                System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
+                                if (resource instanceof Literal) {
+                                    Literal lit = (Literal) resource;
+                                    if (lit.getDatatype() != null) {
+                                        System.err.print(" with a datatype of "+lit.getDatatype());
+                                    }
+                                    if (lit.getLanguage() != null) {
+                                        System.err.print(" with a language of "+lit.getLanguage());
+                                    }
                                 }
-                                if (lit.getLanguage() != null) {
-                                    System.err.print(" with a language of "+lit.getLanguage());
-                                }
+                                System.err.println();
                             }
-                            System.err.println();
+                            System.err.println("---------------");
                         }
-                        System.err.println("---------------");
                     }
                     System.out.println("Finished - awesome");
                 } catch (SprotocolException e) {
-                    System.err.println(String.format("SPROTOCOL threw one of its own SprotocolExceptions: '{}'",e.getMessage()));
+                    System.err.println(String.format("SPROTOCOL threw one of its own SprotocolExceptions: '%s'",e));
                 } catch (IOException e) {
-                    System.err.println(String.format("SPROTOCOL threw an IOException: '{}'",e.getMessage()));
+                    System.err.println(String.format("SPROTOCOL threw an IOException: '%s'",e));
                 }
             } else {
                 System.err.println("The sparql endpoint needs to an http one");
             }
         } else {
-            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query> <sparql endpoint>");
+            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql endpoint> <sparql query>");
         }
     }
 }

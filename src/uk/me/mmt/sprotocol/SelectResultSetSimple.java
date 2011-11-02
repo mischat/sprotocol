@@ -26,6 +26,7 @@ import java.util.List;
  * SparqlResultSet an immutable class implementing SelectResultSet is meant to mimic the Sparql-Results XML format 
  */
 public final class SelectResultSetSimple implements SelectResultSet {
+    
     protected List<String> head;
     protected List<SelectResult> results;
 

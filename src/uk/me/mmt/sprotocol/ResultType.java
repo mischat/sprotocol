@@ -15,32 +15,17 @@
 
  */
 /**
- * Copyright 2011 Mischa Tuffield
+ * Copyright 2011 Mischa Tuffield 
  *
  */
 package uk.me.mmt.sprotocol;
 
-import java.util.Map;
-
 /**
- * A simple implementation of the SelectResult interface 
- * This can not be null
+ * An enumerated type of the different forms
+ * which a SPARQL request might return
  */
-public final class SelectResultSimple implements SelectResult {
-    
-    protected Map<String, SparqlResource> result;
-    
-    protected SelectResultSimple(Map<String, SparqlResource> selectResult) {
-        if (null == selectResult) {
-            throw new IllegalArgumentException("The value of a 'SelectResult' SPARQL Result can not be 'null'");
-        }
-        this.result = selectResult;
-    }
-
-    public Map<String, SparqlResource> getResult() {
-        return result;
-    }
-
+public enum ResultType {
+    SPARQLRESULTS, BOOLEAN, RDF;
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */
