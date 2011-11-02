@@ -84,7 +84,7 @@ public class SparqlProtocolClient {
 
     private static final int TIMEOUT = 200;
     private static final String USER_AGENT  = "sprotocol/1.1";
-    private static final String ACCEPT_HEADER = SPARQL_RESULTS_XML_MIME+", "+SPARQL_RESULTS_TSV_MIME+", "+RDF_TTL_MIME+", "+RDF_XML_MIME;
+    private static final String ACCEPT_HEADER = SPARQL_RESULTS_XML_MIME+", "+SPARQL_RESULTS_TSV_MIME+", "+RDF_XML_MIME+", "+RDF_TTL_MIME;
 
     public SparqlProtocolClient(String sEp) {
         this.sparqlEndpoint = sEp;
