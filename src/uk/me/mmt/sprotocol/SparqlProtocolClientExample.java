@@ -37,33 +37,33 @@ public class SparqlProtocolClientExample {
 
                     ResultType sparqlResultType = sparqlResult.getResultType();
                     if (ResultType.BOOLEAN == sparqlResultType) {
-                        System.err.println("ASK result sent the answer to the ASK is: '"+sparqlResult.getBooleanResult()+"'");
+                        System.out.println("ASK result sent the answer to the ASK is: '"+sparqlResult.getBooleanResult()+"'");
                     } else if (ResultType.RDF == sparqlResultType) {
-                        System.err.println("RDF returned by the SPARQL query");
-                        System.err.println(sparqlResult.getRdfResult());
+                        System.out.println("RDF returned by the SPARQL query");
+                        System.out.println(sparqlResult.getRdfResult());
                     } else if (ResultType.SPARQLRESULTS == sparqlResultType) {
                         SelectResultSet sparqlResults = sparqlResult.getSparqlResult();
                         for (SelectResult result : sparqlResults.getResults()) {
                             for (String variable : sparqlResults.getHead() ) {
                                 SparqlResource resource =  result.getResult().get(variable);
-                                System.err.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
+                                System.out.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
                                 if (resource instanceof Literal) {
                                     Literal lit = (Literal) resource;
                                     if (lit.getDatatype() != null) {
-                                        System.err.print(" with a datatype of "+lit.getDatatype());
+                                        System.out.print(" with a datatype of "+lit.getDatatype());
                                     }
                                     if (lit.getLanguage() != null) {
-                                        System.err.print(" with a language of "+lit.getLanguage());
+                                        System.out.print(" with a language of "+lit.getLanguage());
                                     }
                                 }
-                                System.err.println();
+                                System.out.println();
                             }
-                            System.err.println("---------------");
+                            System.out.println("---------------");
                         }
                     }
                     System.out.println("Finished - awesome");
                 } catch (SprotocolException e) {
-                    System.err.println(String.format("SPROTOCOL threw one of its own SprotocolExceptions: '%s'",e));
+                    System.err.println(String.format("SPROTOCOL threw one of its own SprotocolException: '%s'",e));
                 } catch (IOException e) {
                     System.err.println(String.format("SPROTOCOL threw an IOException: '%s'",e));
                 }
