@@ -20,6 +20,7 @@
  */
 package uk.me.mmt.sprotocol;
 
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
@@ -110,7 +111,7 @@ public class SparqlProtocolClient {
 
         if (isRDF) {
             return new AnyResult(xmlContentType.getFirst());
-        } else if (SPARQL_RESULTS_XML_MIME.equals(xmlContentType.getSecond())) {
+        } else if (xmlContentType.getSecond().startsWith(SPARQL_RESULTS_XML_MIME)) {
             Pair<Boolean,Boolean> askResponse = processAskResponse(xmlContentType.getFirst());
             if (askResponse.getFirst().booleanValue()) {
                 return new AnyResult(askResponse.getSecond().booleanValue());
@@ -286,6 +287,8 @@ public class SparqlProtocolClient {
             } else {
                 throw new SprotocolException(String.format("The result of the POST was a '{}' HTTP response",code), null);
             }
+        } catch (SocketTimeoutException e) {    
+            throw new SprotocolException("SocketTimeoutException caught", e);
         } catch (IOException e) {
             throw new IOException("IOException caught by sprotocol", e);            
         } catch (Exception e) {
