@@ -22,7 +22,7 @@ package uk.me.mmt.sprotocol;
 
 import java.io.IOException;
 
-import uk.me.mmt.sprotocol.SparqlProtocolClient;
+import uk.me.mmt.sprotocol.SparqlQueryProtocolClient;
 import uk.me.mmt.sprotocol.SprotocolException;
 
 public class SparqlProtocolClientExample {
@@ -30,7 +30,7 @@ public class SparqlProtocolClientExample {
     public static void main(String[] args) {
         if (args.length == 2) {
             if (args[0].startsWith("http")) {
-                SparqlProtocolClient sparql = new SparqlProtocolClient( args[0] );
+                SparqlQueryProtocolClient sparql = new SparqlQueryProtocolClient( args[0] );
 
                 try {
                     AnyResult sparqlResult = sparql.genericQuery( args[1] );

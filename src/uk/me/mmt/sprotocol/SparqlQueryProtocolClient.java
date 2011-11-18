@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,48 +45,10 @@ import org.xml.sax.InputSource;
 /**
  * A simple sparql protocol client, sparql in, sparql-results out, zero dependencies
  */
-public class SparqlProtocolClient {
+public class SparqlQueryProtocolClient {
     private final String sparqlEndpoint;
 
-    private static final String UTF_8 = "UTF-8";
-    private static final String SPARQL_RESULTS_XML_MIME = "application/sparql-results+xml";
-    private static final String SPARQL_RESULTS_JSN_MIME = "application/sparql-results+json";
-    private static final String SPARQL_RESULTS_TSV_MIME = "text/tab-separated-values";
-    private static final String SPARQL_RESULTS_CSV_MIME = "text/csv";
-    private static final String RDF_XML_MIME = "application/rdf+xml";
-    private static final String RDF_TTL_MIME = "text/turtle";
-    private static final String RDF_NT_MIME = "text/plain";
-
-
-    //Known SPARQL-result mime-types
-    private final static List<String> SPARQL_MIME_TYPES;
-    static {
-        final ArrayList<String> s = new ArrayList<String>();
-        s.add(SPARQL_RESULTS_XML_MIME);
-        s.add(SPARQL_RESULTS_JSN_MIME);
-        s.add(SPARQL_RESULTS_TSV_MIME);
-        s.add(SPARQL_RESULTS_CSV_MIME);
-        s.add(RDF_XML_MIME);
-        s.add(RDF_TTL_MIME);
-        s.add(RDF_NT_MIME);
-        SPARQL_MIME_TYPES = Collections.unmodifiableList(s);
-    };
-
-    //Known RDF mime-types
-    private final static List<String> RDF_MIME_TYPES; 
-    static {
-        final ArrayList<String> r = new ArrayList<String>();
-        r.add(RDF_XML_MIME);
-        r.add(RDF_TTL_MIME);
-        r.add(RDF_NT_MIME);
-        RDF_MIME_TYPES = Collections.unmodifiableList(r);
-    }
-
-    private static final int TIMEOUT = 200;
-    private static final String USER_AGENT  = "sprotocol/1.1";
-    private static final String ACCEPT_HEADER = SPARQL_RESULTS_XML_MIME+", "+SPARQL_RESULTS_TSV_MIME+", "+RDF_XML_MIME+", "+RDF_TTL_MIME;
-
-    public SparqlProtocolClient(String sEp) {
+    public SparqlQueryProtocolClient(String sEp) {
         this.sparqlEndpoint = sEp;
     }
 
@@ -99,10 +60,10 @@ public class SparqlProtocolClient {
      */
     public AnyResult genericQuery(String query) throws SprotocolException, IOException {
         
-        Pair<String,String> xmlContentType = sparqlQueryAccept(query, ACCEPT_HEADER);    
+        Pair<String,String> xmlContentType = sparqlQueryAccept(query, SprotocolConstants.ACCEPT_HEADER);    
         
         boolean isRDF = false;
-        for (String rdfMime : RDF_MIME_TYPES) {
+        for (String rdfMime : SprotocolConstants.RDF_MIME_TYPES) {
             if (xmlContentType.getSecond().startsWith(rdfMime)) {
                 isRDF = true;
                 break;
@@ -111,7 +72,7 @@ public class SparqlProtocolClient {
 
         if (isRDF) {
             return new AnyResult(xmlContentType.getFirst());
-        } else if (xmlContentType.getSecond().startsWith(SPARQL_RESULTS_XML_MIME)) {
+        } else if (xmlContentType.getSecond().startsWith(SprotocolConstants.SPARQL_RESULTS_XML_MIME)) {
             Pair<Boolean,Boolean> askResponse = processAskResponse(xmlContentType.getFirst());
             if (askResponse.getFirst().booleanValue()) {
                 return new AnyResult(askResponse.getSecond().booleanValue());
@@ -210,7 +171,7 @@ public class SparqlProtocolClient {
      * @throws IOException are also thrown 
      */
     public String executeSparqlRaw(String query) throws SprotocolException, IOException {
-        return executeSparqlRawAccept(query, ACCEPT_HEADER);
+        return executeSparqlRawAccept(query, SprotocolConstants.ACCEPT_HEADER);
     }
 
     /**
@@ -233,19 +194,19 @@ public class SparqlProtocolClient {
     private Pair<String,String> sparqlQueryAccept(final String query, final String acceptHeader) throws SprotocolException, IOException {     
 
         StringBuilder output = new StringBuilder();
-        String contentType = SPARQL_RESULTS_XML_MIME;
+        String contentType = SprotocolConstants.SPARQL_RESULTS_XML_MIME;
 
         try {
             // Construct POST data packet
-            String data = URLEncoder.encode("query", UTF_8) + "=" + URLEncoder.encode(query, UTF_8);
+            String data = URLEncoder.encode("query", SprotocolConstants.UTF_8) + "=" + URLEncoder.encode(query, SprotocolConstants.UTF_8);
 
             // Send data
             URL url = new URL(this.sparqlEndpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
-            conn.setReadTimeout(TIMEOUT);
+            conn.setReadTimeout(SprotocolConstants.TIMEOUT);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("User-Agent", USER_AGENT);
+            conn.setRequestProperty("User-Agent", SprotocolConstants.USER_AGENT);
             conn.setRequestProperty("Accept", acceptHeader); 
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -266,7 +227,7 @@ public class SparqlProtocolClient {
 
                 boolean isRDFie = false;
                 //Here i should be using "guessSparqlQueryType"
-                for (String mime: SPARQL_MIME_TYPES) {
+                for (String mime: SprotocolConstants.SPARQL_MIME_TYPES) {
                     if (contentType.startsWith(mime)) isRDFie = true;
                 }
 
