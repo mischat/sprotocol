@@ -84,13 +84,12 @@ public final class SparqlProtocolClientUtils {
             wr.close();
 
             int code = conn.getResponseCode();
-            if (code == HttpURLConnection.HTTP_OK) {
+            if ( code > 199 && code < 300) {
                 /* Set default content-type to be sparql-xml
                  * Assume this to be the case
                  */
-
                 for (Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
-                    if (header.getKey() != null && header.getKey().equals("Content-Type")) {
+                    if (header.getKey() != null && header.getKey().toLowerCase().equals("content-type")) {
                         contentType = header.getValue().get(0);
                     } 
                 }
