@@ -2,5 +2,5 @@
 .classpath
 .class
 dist
-sprotocol.jar
+sprotocol*.jar
 bin
