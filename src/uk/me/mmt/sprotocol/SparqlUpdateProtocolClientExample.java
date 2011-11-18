@@ -39,7 +39,7 @@ public class SparqlUpdateProtocolClientExample {
 
                 try {
                     Pair<String, String> sparqlResult = sparql.genericUpdate( args[1] );
-                    System.out.println("The mime-type returned '"+sparqlResult.getFirst()+"' and the content of the response is '"+sparqlResult.getSecond()+"'");
+                    System.out.println("The content returned by the update request is '"+sparqlResult.getFirst()+"' and the mime-type of the response is '"+sparqlResult.getSecond()+"'");
                     System.out.println("Finished - awesome");
                 } catch (SprotocolException e) {
                     System.err.println(String.format("SPROTOCOL threw one of its own SprotocolException: '%s'",e));
