@@ -25,7 +25,12 @@ import java.io.IOException;
 import uk.me.mmt.sprotocol.SparqlQueryProtocolClient;
 import uk.me.mmt.sprotocol.SprotocolException;
 
-public class SparqlProtocolClientExample {
+/**
+ * 
+ * Example class using SparqlQueryProtocolClient
+ *
+ */
+public class SparqlQueryProtocolClientExample {
 
     public static void main(String[] args) {
         if (args.length == 2) {
@@ -71,7 +76,7 @@ public class SparqlProtocolClientExample {
                 System.err.println("The sparql endpoint needs to an http one");
             }
         } else {
-            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql endpoint> <sparql query>");
+            System.err.println("Two parameters please: SparqlProtocolClientExample <sparql query endpoint> <sparql query>");
         }
     }
 }
