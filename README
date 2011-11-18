@@ -10,10 +10,14 @@ ant
 
 Running/Adding to classpath: 
 
-java -cp sprotocol.jar uk.me.mmt.sprotocol.SparqlProtocolClientExample
+java -cp sprotocol-XXX.jar uk.me.mmt.sprotocol.SparqlUpdateProtocolClientExample
+
+or 
+
+java -cp sprotocol-XXX.jar uk.me.mmt.sprotocol.SparqlQueryProtocolClientExample
 
 Maven: 
 
 The following command will step you a local maven repository for sprocol: 
 
-mvn install:install-file -Dfile=..sprotocol.jar -DgroupId=mmt -DartifactId=sprotocol -Dversion=0.9 -Dpackaging=jar
+mvn install:install-file -Dfile=..sprotocol.jar -DgroupId=mmt -DartifactId=sprotocol -Dversion=XXX -Dpackaging=jar
