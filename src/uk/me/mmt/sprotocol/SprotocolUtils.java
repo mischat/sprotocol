@@ -49,6 +49,7 @@ public final class SprotocolUtils {
         }
 
         StringBuilder sb = new StringBuilder();
+        sb.append("\"");
         int len = sparql.length();
         for (int i = 0; i < len; i++) {
             char c = sparql.charAt(i);
@@ -85,6 +86,7 @@ public final class SprotocolUtils {
                     }
             }
         }
+        sb.append("\"");
         return sb.toString();
     }
 }
