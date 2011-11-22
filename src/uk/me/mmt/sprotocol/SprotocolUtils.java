@@ -90,7 +90,7 @@ public final class SprotocolUtils {
     }
 
     /**
-     * The Hex's
+     * The Hex thingies
      */
     private static final char hex[] = {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -98,7 +98,7 @@ public final class SprotocolUtils {
 
 
     /**
-     * Checks if something is null, throws exception if it is      * 
+     * Checks if something is null, throws exception if it is
      * 
      * @param Any object o
      * @param With a label
@@ -110,6 +110,9 @@ public final class SprotocolUtils {
         }
     }
     
+    /**
+     * This function converts to Hex and appends to a StringBuilder
+     */
     private static void hexEncode(StringBuilder builder, int c) {
         builder.append('%');
         builder.append(hex[c / 16]);
@@ -118,8 +121,8 @@ public final class SprotocolUtils {
 
     /**
      * 
-     * @param iri
-     * @return
+     * @param An IRI to be used in a SPARQL statement 
+     * @return An escapeedSparqlString
      */
     public static String escapeSparqlIRI(String iri) {
         notNull(iri,"IRI");
@@ -131,13 +134,17 @@ public final class SprotocolUtils {
             char c = iri.charAt(i);
             switch (c) {
             case '<':
-                throw new IllegalArgumentException(String.format("The IRI {} contains a '<' ", iri));
+                sb.append("%3C");
+                break; 
             case '>':
-                throw new IllegalArgumentException(String.format("The IRI {} contains a '>' ", iri));
+                sb.append("%3E");
+                break;
             case ' ':
-                throw new IllegalArgumentException(String.format("The IRI {} contains a ' ' ", iri));
+                sb.append("%20");
+                break;
             case '\t':
-                throw new IllegalArgumentException(String.format("The IRI {} contains a '\t' ", iri));
+                sb.append("%5C");
+                break;
             default:
                 sb.append(c);
 
