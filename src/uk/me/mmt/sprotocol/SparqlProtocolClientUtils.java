@@ -54,7 +54,7 @@ public final class SparqlProtocolClientUtils {
      * @throws IOException are also thrown 
      * 
      */
-    protected static Pair<String,String> sparqlQueryAccept(final String query, final RequestType requestType, final String acceptHeader, final String endpoint, final boolean checkMimeType) throws SprotocolException, IOException {     
+    protected static Pair<String,String> sparqlQueryAccept(final String query, final RequestType requestType, final String acceptHeader, final String endpoint, final boolean checkMimeType, int timeout) throws SprotocolException, IOException {     
 
         StringBuilder output = new StringBuilder();
         String contentType = SprotocolConstants.SPARQL_RESULTS_XML_MIME;
@@ -74,7 +74,7 @@ public final class SparqlProtocolClientUtils {
             URL url = new URL(endpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
-            conn.setReadTimeout(SprotocolConstants.TIMEOUT);
+            conn.setReadTimeout(timeout);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("User-Agent", SprotocolConstants.USER_AGENT);
             conn.setRequestProperty("Accept", acceptHeader); 

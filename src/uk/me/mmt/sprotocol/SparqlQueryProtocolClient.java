@@ -42,6 +42,8 @@ public class SparqlQueryProtocolClient {
     public SparqlQueryProtocolClient(String sEp) {
         this.sparqlEndpoint = sEp;
     }
+    
+    private int timeout = SprotocolConstants.TIMEOUT;
 
     /**
      * This function will check the mime type of a SPARQL HTTP request to check 
@@ -51,7 +53,7 @@ public class SparqlQueryProtocolClient {
      */
     public AnyResult genericQuery(String query) throws SprotocolException, IOException {
         
-        Pair<String,String> xmlContentType = SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.QUERY, SprotocolConstants.ACCEPT_HEADER, this.sparqlEndpoint, true);
+        Pair<String,String> xmlContentType = SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.QUERY, SprotocolConstants.ACCEPT_HEADER, this.sparqlEndpoint, true, getTimeout());
 
         boolean isRDF = false;
         for (String rdfMime : SprotocolConstants.RDF_MIME_TYPES) {
@@ -172,7 +174,7 @@ public class SparqlQueryProtocolClient {
      * @throws IOException are also thrown 
      */
     public String executeSparqlRawAccept(String query, String acceptHeader) throws SprotocolException, IOException {
-        return SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.QUERY, acceptHeader, this.sparqlEndpoint, true).getFirst();
+        return SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.QUERY, acceptHeader, this.sparqlEndpoint, true, getTimeout()).getFirst();
     }
 
     /**
@@ -301,6 +303,13 @@ public class SparqlQueryProtocolClient {
         return new Pair<Boolean,Boolean>(false,false);
     }
 
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

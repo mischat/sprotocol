@@ -28,6 +28,8 @@ import java.io.IOException;
 public class SparqlUpdateProtocolClient {
     
     private final String sparqlEndpoint;
+    
+    private int timeout = SprotocolConstants.TIMEOUT;
 
     public SparqlUpdateProtocolClient(String sEp) {
         this.sparqlEndpoint = sEp;
@@ -43,7 +45,15 @@ public class SparqlUpdateProtocolClient {
      * @throws SprotocolException 
      */
     public Pair<String,String> genericUpdate(String query) throws SprotocolException, IOException {
-        return SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.UPDATE, SprotocolConstants.ACCEPT_HEADER, sparqlEndpoint, false);    
+        return SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.UPDATE, SprotocolConstants.ACCEPT_HEADER, sparqlEndpoint, false, getTimeout());    
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public int getTimeout() {
+        return timeout;
     }
 
 }

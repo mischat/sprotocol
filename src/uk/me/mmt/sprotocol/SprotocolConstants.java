@@ -64,7 +64,7 @@ public class SprotocolConstants {
     }
 
     //Timeout settings
-    public static final int TIMEOUT = 1000;
+    public static final int TIMEOUT = 10000;
     
     //Sprotocol's User Agent
     public static final String USER_AGENT  = "sprotocol/1.1";
