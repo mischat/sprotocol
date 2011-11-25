@@ -36,7 +36,7 @@ public final class IRI extends SparqlResource {
     
     @Override
     public boolean isIRI() {
-        return false;
+        return true;
     }
     
     @Override

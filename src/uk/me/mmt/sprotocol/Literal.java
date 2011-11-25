@@ -49,7 +49,7 @@ public final class Literal extends SparqlResource {
     
     @Override
     public boolean isLiteral() {
-        return false;
+        return true;
     }
 
     @Override
