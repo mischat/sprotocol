@@ -20,14 +20,12 @@
  */
 package uk.me.mmt.sprotocol;
 
-import java.util.Map;
-
 /**
- * What should be an interface to immutable SPARQL Results a.k.a SelectResult
+ * What should be an interface to immutable SPARQL Results a.k.a SelectResultRow
  */
-public interface SelectResult {
+public interface SelectResultRow {
 
-    public Map<String,SparqlResource> getResult();
+    SparqlResource get(String variable);
 
 }
 

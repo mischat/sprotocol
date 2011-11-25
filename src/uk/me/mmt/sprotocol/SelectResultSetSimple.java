@@ -20,6 +20,8 @@
  */
 package uk.me.mmt.sprotocol;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,23 +29,24 @@ import java.util.List;
  */
 public final class SelectResultSetSimple implements SelectResultSet {
     
-    protected List<String> head;
-    protected List<SelectResult> results;
+    private final List<String> head;
+    private final List<SelectResultRow> results;
 
-    protected SelectResultSetSimple(List<String> head, List<SelectResult> results){
+    public SelectResultSetSimple(List<String> head, List<SelectResultRow> results) {
         if (null == head || null == results) {
             throw new IllegalArgumentException("Neither the head or the resulet of the SPARQL-RESULTS xml can be 'null'");
         }
-        this.head = head;
-        this.results = results;
-    }
-
-    public List<SelectResult> getResults() {
-        return results;
+        this.head = Collections.unmodifiableList(head);
+        this.results = Collections.unmodifiableList(results);
     }
 
     public List<String> getHead() {
         return head;
+    }
+    
+    @Override
+    public Iterator<SelectResultRow> iterator() {
+        return results.iterator();
     }
 
 }

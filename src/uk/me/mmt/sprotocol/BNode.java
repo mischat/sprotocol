@@ -24,13 +24,55 @@ package uk.me.mmt.sprotocol;
  * An immutable BNode class disallows null values
  */
 public final class BNode extends SparqlResource {
-
-    protected BNode(String id) {
-        if (null == id) {
-            throw new IllegalArgumentException("The value of an BNode can not be 'null'");
-        }
-        value = id;
+    
+    public BNode(String id) {
+        super(id);
     }
+    
+    @Override
+    public BNode asBnode() {
+        return this;
+    }
+    
+    @Override
+    public boolean isBnode() {
+        return true;
+    }
+
+    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + this.getValue().hashCode();
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (!(obj instanceof BNode))
+            return false;
+        
+        BNode other = (BNode) obj;
+        if (!this.getValue().equals(other.getValue()))
+            return false;
+        return true;
+    }
+
+
+    @Override
+    public String toString() {
+        return String.format("<%s>", this.getValue());
+    }
+    
 
 }
 

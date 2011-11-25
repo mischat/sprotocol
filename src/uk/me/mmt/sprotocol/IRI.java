@@ -25,12 +25,52 @@ package uk.me.mmt.sprotocol;
  */
 public final class IRI extends SparqlResource {
     
-    protected IRI(String iri) {
-        if (null == iri) {
-            throw new IllegalArgumentException("The value of an IRI can not be 'null'");
-        }
-        value = iri;
+    public IRI(String iri) {
+        super(iri);
     }
+    
+    @Override
+    public IRI asIRI() {
+        return this;
+    }
+    
+    @Override
+    public boolean isIRI() {
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + this.getValue().hashCode();
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        
+        if (obj == null)
+            return false;
+        
+        if (!(obj instanceof IRI))
+            return false;
+        
+        IRI other = (IRI) obj;
+        if (!this.getValue().equals(other.getValue()))
+            return false;
+        return true;
+    }
+
+
+    @Override
+    public String toString() {
+        return String.format("<%s>", this.getValue());
+    }
+
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

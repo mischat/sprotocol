@@ -25,12 +25,52 @@ package uk.me.mmt.sprotocol;
  */
 public abstract class SparqlResource {
 
-    protected String value;
+    private final String value;
+
+    public SparqlResource(String value) {
+        if (null == value) {
+            throw new IllegalArgumentException("The value can not be 'null'");
+        }
+
+        this.value = value;
+    }
 
     public String getValue() {
         return value;
     }
+    
+    public Literal asLiteral() {
+        throw new IllegalStateException(this + " is not literal");
+    }
 
+    public IRI asIRI() {
+        throw new IllegalStateException(this + " is not IRI");
+    }
+
+    public BNode asBnode() {
+        throw new IllegalStateException(this + " is not bnode");
+    }
+
+    public boolean isLiteral() {
+        return false;
+    }
+
+    public boolean isIRI() {
+        return false;
+    }
+
+    public boolean isBnode() {
+        return false;
+    }
+
+    @Override
+    abstract public boolean equals(Object obj);
+    
+    @Override
+    abstract public int hashCode();
+
+    @Override
+    abstract public String toString();
 }
 
 /* vi:set ts=8 sts=4 sw=4 et: */

@@ -48,9 +48,9 @@ public class SparqlQueryProtocolClientExample {
                         System.out.println(sparqlResult.getRdfResult());
                     } else if (ResultType.SPARQLRESULTS == sparqlResultType) {
                         SelectResultSet sparqlResults = sparqlResult.getSparqlResult();
-                        for (SelectResult result : sparqlResults.getResults()) {
+                        for (SelectResultRow result : sparqlResults) {
                             for (String variable : sparqlResults.getHead() ) {
-                                SparqlResource resource =  result.getResult().get(variable);
+                                SparqlResource resource =  result.get(variable);
                                 System.out.print("This variable '"+variable+"' with this result: '"+resource.getValue()+"' was returned");
                                 if (resource instanceof Literal) {
                                     Literal lit = (Literal) resource;

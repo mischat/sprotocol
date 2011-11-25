@@ -20,13 +20,16 @@
  */
 package uk.me.mmt.sprotocol;
 
+import java.util.Iterator;
 import java.util.List;
 
-public interface SelectResultSet {
+public interface SelectResultSet extends Iterable<SelectResultRow> {
 
-    public List<SelectResult> getResults();
-    
     public List<String> getHead();
+    
+    @Override
+    public Iterator<SelectResultRow> iterator();
+    
 
 }
 

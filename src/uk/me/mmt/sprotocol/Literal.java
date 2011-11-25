@@ -24,14 +24,12 @@ package uk.me.mmt.sprotocol;
  * Literal class, immutable with option datatype and language
  */
 public final class Literal extends SparqlResource {
-    protected String datatype;
-    protected String language;
+    private final String datatype;
+    private final String language;
+    private volatile String forToString;
 
-    protected Literal(String literal, String dt, String lang) {
-        if (null == literal) {
-            throw new IllegalArgumentException("The value of a Literal can not be 'null'");
-        }
-        value = literal;
+    public Literal(String literal, String dt, String lang) {
+        super(literal);
         datatype = dt;
         language = lang;
     }
@@ -43,6 +41,78 @@ public final class Literal extends SparqlResource {
     public String getLanguage() {
         return language;
     }
+    
+    @Override
+    public Literal asLiteral() {
+        return this;
+    }
+    
+    @Override
+    public boolean isLiteral() {
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.datatype == null) ? 0 : this.datatype.hashCode());
+        result = prime * result + ((this.language == null) ? 0 : this.language.hashCode());
+        result = prime * result + (this.getValue().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Literal))
+            return false;
+        Literal other = (Literal) obj;
+        if (this.datatype == null) {
+            if (other.datatype != null)
+                return false;
+        } else if (!this.datatype.equals(other.datatype))
+            return false;
+        if (this.language == null) {
+            if (other.language != null)
+                return false;
+        } else if (!this.language.equals(other.language))
+            return false;
+        
+        if (!this.getValue().equals(other.getValue()))
+            return false;
+        
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        if (forToString != null) {
+            return forToString;
+        }
+        
+        final String result = prepareToString();
+        forToString = result;
+        return result;
+    }
+
+    private String prepareToString() {
+        final String escaped = SprotocolUtils.escapeSparqlString(getValue());
+        if (datatype == null && language == null) {
+            return escaped;
+        }
+        
+        if (datatype != null) {
+            return String.format("%s^^<%s>", escaped, datatype); 
+        } else {
+            return String.format("%s@%s", escaped, language);
+        }
+    }
+    
+    
 
 }
 

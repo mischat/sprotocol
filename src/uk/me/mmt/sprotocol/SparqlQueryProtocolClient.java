@@ -182,7 +182,7 @@ public class SparqlQueryProtocolClient {
      * 
      * @throws SprotocolException which is a run time exception
      */
-    private SelectResult parseSparqlResult(Element resultEl) throws SprotocolException {
+    private SelectResultRow parseSparqlResult(Element resultEl) throws SprotocolException {
         HashMap<String,SparqlResource> result = new HashMap<String,SparqlResource>();
 
         NodeList bindings = resultEl.getElementsByTagName("binding");
@@ -231,7 +231,7 @@ public class SparqlQueryProtocolClient {
      */
     private SelectResultSet parseSparqlResultXML(String xml) throws SprotocolException, IOException {
         ArrayList<String> head = new ArrayList<String>();
-        ArrayList<SelectResult> results = new ArrayList<SelectResult>();
+        ArrayList<SelectResultRow> results = new ArrayList<SelectResultRow>();
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(false);
@@ -256,7 +256,7 @@ public class SparqlQueryProtocolClient {
             for (int i = 0 ; i < result.getLength();i++) {
                 //get the result element
                 Element bindingEl = (Element) result.item(i);
-                SelectResult sr = parseSparqlResult(bindingEl);
+                SelectResultRow sr = parseSparqlResult(bindingEl);
                 results.add(sr);
             }
         } catch (IOException e) {
@@ -265,7 +265,7 @@ public class SparqlQueryProtocolClient {
             throw new SprotocolException("Error parsing XML returned via SPARQL Endpoint", e);
         }
 
-        return new SelectResultSetSimple(head,results);
+        return new SelectResultSetSimple(head, results);
     }
 
     /**

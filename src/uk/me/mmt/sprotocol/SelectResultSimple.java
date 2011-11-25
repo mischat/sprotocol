@@ -26,19 +26,21 @@ import java.util.Map;
  * A simple implementation of the SelectResult interface 
  * This can not be null
  */
-public final class SelectResultSimple implements SelectResult {
+public final class SelectResultSimple implements SelectResultRow {
     
-    protected Map<String, SparqlResource> result;
+    private Map<String, SparqlResource> result;
     
     protected SelectResultSimple(Map<String, SparqlResource> selectResult) {
         if (null == selectResult) {
-            throw new IllegalArgumentException("The value of a 'SelectResult' SPARQL Result can not be 'null'");
+            throw new IllegalArgumentException("The value of a 'SelectResultRow' SPARQL Result can not be 'null'");
         }
         this.result = selectResult;
     }
 
-    public Map<String, SparqlResource> getResult() {
-        return result;
+    
+    @Override
+    public SparqlResource get(String variable) {
+        return result.get(variable);
     }
 
 }
