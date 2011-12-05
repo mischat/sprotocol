@@ -221,7 +221,7 @@ public class SparqlQueryProtocolClient {
                 result.put(bindingElement.getAttribute("name"),bnode);
             }   
         }
-        return new SelectResultSimple(result);
+        return new SelectResultRowSimple(result);
     }
 
     /**

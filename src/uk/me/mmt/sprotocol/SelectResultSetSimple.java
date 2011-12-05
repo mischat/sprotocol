@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * SparqlResultSet an immutable class implementing SelectResultSet is meant to mimic the Sparql-Results XML format 
+ * SelectResultSetSimple an immutable class implementing SelectResultSet is meant to mimic the Sparql-Results XML format 
  */
 public final class SelectResultSetSimple implements SelectResultSet {
     
