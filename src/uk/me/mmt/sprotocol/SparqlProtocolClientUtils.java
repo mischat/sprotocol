@@ -118,7 +118,7 @@ public final class SparqlProtocolClientUtils {
                 rd.close();
 
             } else {
-                throw new SprotocolException(String.format("The result of the POST was a '{}' HTTP response",code), null);
+                throw new SprotocolException(String.format("The result of the POST was a '%s' HTTP response",code), null);
             }
         } catch (SocketTimeoutException e) {    
             throw new SprotocolException("SocketTimeoutException caught", e);
