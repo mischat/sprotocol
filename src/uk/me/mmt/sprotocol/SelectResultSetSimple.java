@@ -34,7 +34,7 @@ public final class SelectResultSetSimple implements SelectResultSet {
 
     public SelectResultSetSimple(List<String> head, List<SelectResultRow> results) {
         if (null == head || null == results) {
-            throw new IllegalArgumentException("Neither the head or the resulet of the SPARQL-RESULTS xml can be 'null'");
+            throw new IllegalArgumentException("Neither the head or the result of the SPARQL-RESULTS can be 'null'");
         }
         this.head = Collections.unmodifiableList(head);
         this.results = Collections.unmodifiableList(results);
