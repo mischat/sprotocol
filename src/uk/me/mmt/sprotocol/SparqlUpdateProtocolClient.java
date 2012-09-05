@@ -45,7 +45,8 @@ public class SparqlUpdateProtocolClient {
      * @throws SprotocolException 
      */
     public Pair<String,String> genericUpdate(String query) throws SprotocolException, IOException {
-        return SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.UPDATE, SprotocolConstants.ACCEPT_HEADER, sparqlEndpoint, false, getTimeout());    
+        final SparqlResponse response = SparqlProtocolClientUtils.sparqlQueryAccept(query, RequestType.UPDATE, SprotocolConstants.ACCEPT_HEADER, sparqlEndpoint, false, getTimeout());
+        return new Pair<String,String>(response.getData(), response.getRawContentType());
     }
 
     public void setTimeout(int timeout) {

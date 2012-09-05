@@ -39,7 +39,7 @@ public class SprotocolConstants {
     public static final String RDF_NT_MIME = "text/plain";
 
 
-    //Known SPARQL-result mime-types
+    //Known SPARQL response mime-types
     public final static List<String> SPARQL_MIME_TYPES;
     static {
         final ArrayList<String> s = new ArrayList<String>();
@@ -52,6 +52,17 @@ public class SprotocolConstants {
         s.add(RDF_NT_MIME);
         SPARQL_MIME_TYPES = Collections.unmodifiableList(s);
     };
+
+    // known SPARQL result mime-types
+    public final static List<String> SPARQL_RESULTS_MIME_TYPES;
+    static {
+        final ArrayList<String> s = new ArrayList<String>();
+        s.add(SPARQL_RESULTS_XML_MIME);
+        s.add(SPARQL_RESULTS_JSN_MIME);
+        s.add(SPARQL_RESULTS_TSV_MIME);
+        s.add(SPARQL_RESULTS_CSV_MIME);
+        SPARQL_RESULTS_MIME_TYPES = Collections.unmodifiableList(s);
+    }
 
     //Known RDF mime-types
     public final static List<String> RDF_MIME_TYPES; 

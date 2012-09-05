@@ -20,16 +20,14 @@
  */
 package uk.me.mmt.sprotocol;
 
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map.Entry;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Util function used by both Sparql Query and Sparql Update
@@ -38,9 +36,9 @@ public final class SparqlProtocolClientUtils {
 
     //To prevent accidental instances
     private SparqlProtocolClientUtils() {
-        
+
     }
-    
+
     /**
      * Send a SPARQL Request via POST configurable acceptHeader returns a String
      * 
@@ -54,60 +52,72 @@ public final class SparqlProtocolClientUtils {
      * @throws IOException are also thrown 
      * 
      */
-    protected static Pair<String,String> sparqlQueryAccept(final String query, final RequestType requestType, final String acceptHeader, final String endpoint, final boolean checkMimeType, int timeout) throws SprotocolException, IOException {     
+    protected static SparqlResponse sparqlQueryAccept(final String query, final RequestType requestType, final String acceptHeader, final String endpoint, final boolean checkMimeType, int timeout) throws SprotocolException, IOException {     
 
-        StringBuilder output = new StringBuilder();
-        String contentType = SprotocolConstants.SPARQL_RESULTS_XML_MIME;
+        final StringBuilder output = new StringBuilder();
+        final String contentType;
+        final String charset;
+        final String rawContentType;
 
         try {
-            
             //Identify the correct cgi-parameter name
-            String cgi = "query";
+            final String cgi;
             if (requestType.equals(RequestType.UPDATE)) {
                 cgi = "update";
+            } else {
+                cgi = "query";
             }
-            
+
             // Construct POST data packet
-            String data = URLEncoder.encode(cgi, SprotocolConstants.UTF_8) + "=" + URLEncoder.encode(query, SprotocolConstants.UTF_8);
+            final String data = URLEncoder.encode(cgi, SprotocolConstants.UTF_8) + "=" + URLEncoder.encode(query, SprotocolConstants.UTF_8);
 
             // Send data
-            URL url = new URL(endpoint);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            final URL url = new URL(endpoint);
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setReadTimeout(timeout);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("User-Agent", SprotocolConstants.USER_AGENT);
             conn.setRequestProperty("Accept", acceptHeader); 
 
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(data);
-            wr.close();
+            OutputStreamWriter wr = null;
+            try {
+                wr = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                wr.write(data);
+            } finally {
+                if (wr != null) {
+                    wr.close();
+                }
+            }
 
             int code = conn.getResponseCode();
-            if ( code > 199 && code < 300) {
-                /* Set default content-type to be sparql-xml
-                 * Assume this to be the case
-                 */
-                for (Entry<String, List<String>> header : conn.getHeaderFields().entrySet()) {
-                    if (header.getKey() != null && header.getKey().toLowerCase().equals("content-type")) {
-                        contentType = header.getValue().get(0);
-                    } 
-                }
+            if (code < 200 || code >= 300) {
+                throw new SprotocolException(String.format("The result of the POST was a '%s' HTTP response",code), null);
+            }
 
-                if (checkMimeType) {
-                    boolean isRDFie = false;
-                    //Here i should be using "guessSparqlQueryType"
-                    for (String mime: SprotocolConstants.SPARQL_MIME_TYPES) {
-                        if (contentType.startsWith(mime)) isRDFie = true;
-                    }
+            /* Set default content-type to be sparql-xml
+             * Assume this to be the case
+             */
+            final String ct = conn.getContentType();
+            final Pair<String,String> contentTypeCharset = getContentTypeCharset(ct);
+            if (contentTypeCharset.getFirst() != null) {
+                contentType = contentTypeCharset.getFirst();
+                rawContentType = ct;
+            } else {
+                contentType = SprotocolConstants.SPARQL_RESULTS_XML_MIME;
+                rawContentType = SprotocolConstants.SPARQL_RESULTS_XML_MIME;
+            }
 
-                    if (!isRDFie) {
-                        throw new SprotocolException(String.format("Mime type returned by HTTP request: '{}' not recongised ",contentType), null);
-                    }
-                }
+            charset = contentTypeCharset.getSecond();
 
-                // Get the response
-                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            if (checkMimeType && !SprotocolConstants.SPARQL_MIME_TYPES.contains(contentType)) {
+                throw new SprotocolException(String.format("Mime type returned by HTTP request: '{}' not recognised ",contentType), null);
+            }
+
+            // Get the response
+            BufferedReader rd = null;
+            try {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                 String line;
 
                 while ((line = rd.readLine()) != null) {
@@ -115,20 +125,48 @@ public final class SparqlProtocolClientUtils {
                     output.append(line);
                     output.append("\n");
                 }
-                rd.close();
-
-            } else {
-                throw new SprotocolException(String.format("The result of the POST was a '%s' HTTP response",code), null);
+            } finally {
+                if (rd != null) {
+                    rd.close();
+                }
             }
         } catch (SocketTimeoutException e) {    
             throw new SprotocolException("SocketTimeoutException caught", e);
         } catch (IOException e) {
-            throw new IOException("IOException caught by sprotocol", e);            
+            throw new IOException("IOException caught by sprotocol", e);
         } catch (Exception e) {
             throw new SprotocolException("Error when making HTTP sparql protocol call to the SPARQL endpoint", e);
         }
 
-        return new Pair<String,String>(output.toString(),contentType);
+        return new SparqlResponse(output.toString(), contentType, charset, rawContentType);
+    }
+
+    /**
+     * Given a raw content-type header, returns the content-type and charset as
+     * lower case strings with whitespace trimmed.
+     * 
+     * If no charset is specified in the header, charset will be returned as null;
+     *
+     * @param contentTypeHeader Raw content-type header from an HTTP response
+     * @return Pair containing trimmed and lowercased content-type and charset Strings
+     */
+    private static Pair<String,String> getContentTypeCharset(final String contentTypeHeader) {
+        if (null == contentTypeHeader) {
+            return new Pair<String, String>(null, null);
+        }
+
+        final String[] parts = contentTypeHeader.split(";");
+        final String contentType = parts[0].toLowerCase().trim();
+        String charset = null;
+
+        if (parts.length > 1) {
+            final String[] charsetParts = parts[1].split("=");
+            if (charsetParts.length == 2 && charsetParts[0].toLowerCase().trim().equals("charset")) {
+                charset = charsetParts[1].toLowerCase().trim();
+            }
+        }
+
+        return new Pair<String,String>(contentType, charset);
     }
 
 }
