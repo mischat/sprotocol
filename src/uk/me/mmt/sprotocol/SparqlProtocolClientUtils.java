@@ -72,22 +72,32 @@ public final class SparqlProtocolClientUtils {
             final String data = URLEncoder.encode(cgi, SprotocolConstants.UTF_8) + "=" + URLEncoder.encode(query, SprotocolConstants.UTF_8);
 
             // Send data
-            final URL url = new URL(endpoint);
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setReadTimeout(timeout);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("User-Agent", SprotocolConstants.USER_AGENT);
-            conn.setRequestProperty("Accept", acceptHeader); 
+            // Modified: USE GET for queries
+            HttpURLConnection conn;
+            if (requestType.equals(RequestType.UPDATE)) {
+                final URL url = new URL(endpoint);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setReadTimeout(timeout);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("User-Agent", SprotocolConstants.USER_AGENT);
+                conn.setRequestProperty("Accept", acceptHeader); 
 
-            OutputStreamWriter wr = null;
-            try {
-                wr = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-                wr.write(data);
-            } finally {
-                if (wr != null) {
-                    wr.close();
+                OutputStreamWriter wr = null;
+                try {
+                    wr = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                    wr.write(data);
+                } finally {
+                    if (wr != null) {
+                        wr.close();
+                    }
                 }
+            } else {
+                final URL url = new URL(endpoint + "?" + data);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(timeout);
+                conn.setRequestProperty("User-Agent", SprotocolConstants.USER_AGENT);
+                conn.setRequestProperty("Accept", acceptHeader); 
             }
 
             int code = conn.getResponseCode();
